@@ -1,0 +1,1119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="mainLayout">
+<head>
+<title>Travian sk2</title>
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="content-language" content="sk" />
+<link href="//gpack.travian.com/87fad9e0/lang/sk/compact.css?2ed63" rel="stylesheet" type="text/css" /><link href="//gpack.travian.com/87fad9e0/lang/sk/lang.css?2ed63" rel="stylesheet" type="text/css" /><link href="img/travian_basics.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+	window.ajaxToken = '55a8d8c83569a0d454b9c0e6aee937b8';
+	window._player_uuid = 'c3d4e000-54a3-11e7-2102-010000000d8c';
+</script>
+<script type="text/javascript" src="crypt.js?1495011438"></script>
+<script type="text/javascript">
+Travian.Translation.add(
+{
+	'allgemein.anleitung':	'Návod',
+	'allgemein.cancel':	'zrušiť',
+	'allgemein.ok':	'OK',
+	'allgemein.close':	'zavrieť',
+	'cropfinder.keine_ergebnisse': 'Žiadne výsledky hladania.'
+});
+Travian.applicationId = 'T4.4 Game';
+Travian.Game.version = '4.4';
+Travian.Game.worldId = 'sk22';
+Travian.Game.speed = 1;
+
+Travian.Templates = {};
+	Travian.Templates.ButtonTemplate = "&lt;button &gt;\n\t&lt;div class=\"button-container addHoverClick\"&gt;\n\t\t&lt;div class=\"button-background\"&gt;\n\t\t\t&lt;div class=\"buttonStart\"&gt;\n\t\t\t\t&lt;div class=\"buttonEnd\"&gt;\n\t\t\t\t\t&lt;div class=\"buttonMiddle\"&gt;&lt;\/div&gt;\n\t\t\t\t&lt;\/div&gt;\n\t\t\t&lt;\/div&gt;\n\t\t&lt;\/div&gt;\n\t\t&lt;div class=\"button-content\"&gt;&lt;\/div&gt;\n\t&lt;\/div&gt;\n&lt;\/button&gt;\n";
+
+</script>
+<script type="text/javascript">
+	Travian.Game.eventJamHtml = '&lt;a href=&quot;http://t4.answers.travian.sk/index.php?aid=249#go2answer&quot; target=&quot;blank&quot; title=&quot;Travian Answers&quot;&gt;&lt;span class=&quot;c0 t&quot;&gt;0:00:0&lt;/span&gt;?&lt;/a&gt;'.unescapeHtml();
+</script>
+<script type="text/javascript">
+window.addEvent('domready', function() {
+		Travian.Form.UnloadHelper.message = 'Na stránke boli vykonané zmeny. Chceš stránku opustiť?';
+	new Travian.TabManager();
+});
+</script>
+<script type="text/javascript">
+	Travian.Game.Preferences.initialize({"firstTutorialClosed":"true","highlightsToggle":"true","reports_tab0":"AAAAAAEAAgADAAQABQAGAAcACAALAAwADQAOAA8AEAARABIAEwAUABUAFgAXAA==","travian_toggle_hero":"expanded","travian_toggle_infobox":"expanded","travian_toggle_villagelist":"collapsed"});
+	Travian.Game.Quest.init();
+</script>
+</head>
+<body class="v35  village1 perspectiveResources  ltr">
+<div id="background">
+<div id="headerBar"></div>
+<div id="bodyWrapper">
+<img style="filter:chroma();" src="img/x.gif" id="msfilter" alt="" />
+<div id="header">
+<a id="logo" href="http://www.travian.sk/" target="_blank" title="Travian"></a>
+<ul id="navigation">
+<li id="n1" class="villageResources">
+<a class="active" href="dorf1.php" accesskey="1" title="Suroviny||"></a>
+</li>
+<li id="n2" class="villageBuildings">
+<a class="inactive" href="dorf2.php" accesskey="2" title="Centrum dediny||"></a>
+</li>
+<li id="n3" class="map">
+<a href="karte.php" accesskey="3" title="Mapa||"></a>
+</li>
+<li id="n4" class="statistics">
+<a href="statistiken.php" accesskey="4" title="Štatistiky||"></a>
+</li>
+<li id="n5" class="reports">
+<a href="berichte.php" accesskey="5" title="Hlásenia||Nové reporty: 0"></a>
+</li>
+<li id="n6" class="messages">
+<a href="messages.php" accesskey="6" title="Správy||Nové správy: 0"></a>
+</li>
+<li id="n7" class="gold">
+<a href="#" accesskey="7" title="Kúpiť zlatky" onclick="window.fireEvent('startPaymentWizard', {}); this.blur(); return false;"></a>
+</li>
+<li class="clear">&nbsp;</li>
+</ul>
+<script type="text/javascript">
+	window.addEvent('domready', function()
+	{
+		Travian.Game.Layout.goldButtonAnimation(true);
+	});
+</script>
+<div id="goldSilver">
+<div id="goldSilverContainer">
+<div class="gold">
+<img src="img/x.gif" alt="Zlatky" title="Zlatky" class="gold" onclick="window.fireEvent('startPaymentWizard', {data:{activeTab: 'pros'}}); return false;" />
+<span class="ajaxReplaceableGoldAmount">0</span>
+</div>
+<div class="silver">
+<img src="img/x.gif" alt="Striebro" title="Striebro" class="silver" onclick="window.fireEvent('startPaymentWizard', {data:{activeTab: 'pros'}}); return false;" />
+<span class="ajaxReplaceableSilverAmount">0</span>
+</div>
+</div>
+</div>
+<ul id="outOfGame" class="LTR">
+<li class="profile">
+<a href="spieler.php" title="Profil||Editovať profil">
+<img src="img/x.gif" alt="Profil" />
+</a>
+</li>
+<li class="options">
+<a href="options.php" title="Možnosti||Editovať nastavenia účtu">
+<img src="img/x.gif" alt="Možnosti" />
+</a>
+</li>
+<li class="forum">
+<a target="_blank" href="http://forum.travian.sk" title="Fórum||Stretnúť sa s hráčmi na externom fóre">
+<img src="img/x.gif" alt="Fórum" />
+</a>
+</li>
+<li class="help">
+<a href="help.php" title="Nápoveda||Manuály, Answers a Support">
+<img src="img/x.gif" alt="Nápoveda" />
+</a>
+</li>
+<li class="logout ">
+<a href="logout.php" title="Logout||Odhlásiť sa z hry">
+<img src="img/x.gif" alt="Logout" />
+</a>
+</li>
+<li class="clear">&nbsp;</li>
+</ul>
+<script type="text/javascript">
+$$('#outOfGame li.logout a').addEvent('click', function(){
+	Travian.WindowManager.getWindows().each(function($dialog){
+		Travian.WindowManager.unregister($dialog);
+	});
+});
+</script></div>
+<div id="center">
+<div id="sidebarBeforeContent" class="sidebar beforeContent">
+<div id="sidebarBoxHero" class="sidebarBox toggleable expanded ">
+<div class="sidebarBoxBaseBox">
+<div class="baseBox baseBoxTop">
+<div class="baseBox baseBoxBottom">
+<div class="baseBox baseBoxCenter"></div>
+</div>
+</div>
+</div>
+<div class="sidebarBoxInnerBox">
+<div class="innerBox header ">
+<button id="heroImageButton" onclick="window.location.href='hero.php';" class="heroImageButton" type="button" title="Prehľad hrdinu||Hrdina je momentálne v dedine Dedina: Ashreen.">
+<img class="heroImage" src="/hero_head.php?uid=3468&amp;size=sideinfo&amp;code=9a340a5b9a57ca1f8470a7ba2ae8f1fa" title="Hrdina" alt="Hrdina" />
+</button>
+<div class="playerName">
+<a href="spieler.php">
+<img src="img/x.gif" class="nation nation2" alt="Germáni" title="Germáni" />
+</a>
+<a href="spieler.php" title="Hráčsky profil">Ashreen</a>
+</div>
+<button type="button" id="button595a3bcd61843" class="layoutButton auctionWhite green  " onclick="return false;" title="Aukcie||Tipy sa nahr&aacute;vaj&uacute;...">
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+			window.addEvent('domready', function()
+			{
+				var button = $('button595a3bcd61843');
+				if (button)
+				{
+					var titleFunction = function()
+					{
+						button.removeEvent('mouseenter', titleFunction);
+						Travian.Game.Layout.loadLayoutButtonTitle(button, 'hero', 'auctionWhite');
+					};
+					button.addEvent('mouseenter', titleFunction);
+				}
+			});
+	
+	if($('button595a3bcd61843'))
+	{
+		$('button595a3bcd61843').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"green","onclick":"return false;","loadTitle":true,"boxId":"hero","disabled":false,"speechBubble":"","class":"","id":"button595a3bcd61843","redirectUrl":"hero.php?t=4","redirectUrlExternal":""}]);
+		});
+	}
+</script><button type="button" id="button595a3bcd61c62" class="layoutButton adventureWhite green  " onclick="return false;" title="V&yacute;pravy||Tipy sa nahr&aacute;vaj&uacute;...">
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+<div class="speechBubbleContainer ">
+<div class="speechBubbleBackground">
+<div class="start">
+<div class="end">
+<div class="middle"></div>
+</div>
+</div>
+</div>
+<div class="speechBubbleContent">4</div>
+</div>
+<div class="clear"></div> </button>
+<script type="text/javascript">
+			window.addEvent('domready', function()
+			{
+				var button = $('button595a3bcd61c62');
+				if (button)
+				{
+					var titleFunction = function()
+					{
+						button.removeEvent('mouseenter', titleFunction);
+						Travian.Game.Layout.loadLayoutButtonTitle(button, 'hero', 'adventureWhite');
+					};
+					button.addEvent('mouseenter', titleFunction);
+				}
+			});
+	
+	if($('button595a3bcd61c62'))
+	{
+		$('button595a3bcd61c62').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"green","onclick":"return false;","loadTitle":true,"boxId":"hero","disabled":false,"speechBubble":"4","class":"","id":"button595a3bcd61c62","redirectUrl":"hero.php?t=3","redirectUrlExternal":""}]);
+		});
+	}
+</script> </div>
+<div class="innerBox content">
+<div class="heroStatusMessage" title="Hrdina je momentálne v dedine Dedina: Ashreen.">
+<a href="build.php?newdid=69918&amp;id=39&amp;&amp;tt=2">
+<img alt="V domovskej dedine" src="img/x.gif" class="heroStatus100" />
+</a>
+				V domovskej dedine</div>
+<div class="progressBars">
+<div class="heroHealthBarBox alive" title="Zdravie: ‎‭‭100‬%‬‎">
+<a href="hero.php?t=1">
+<img src="img/x.gif" class="injury" alt="Zdravie" title="Zdravie" />
+</a>
+<div class="bar" style="width:100%">&nbsp;</div>
+</div>
+<div class="heroXpBarBox" title="Skúsenosti: 0">
+<a href="hero.php?t=1">
+<img src="img/x.gif" class="iExperience" alt="Skúsenosti" title="Skúsenosti" />
+</a>
+<div class="bar" style="width:0%">&nbsp;</div>
+</div>
+</div> </div>
+<div class="innerBox footer">
+<button type="button" class="toggle" onclick="" title="Schovať informácie">
+<div class="button-container addHoverClick"></div>
+</button>
+<script type="text/javascript">
+		window.addEvent('domready', function()
+		{
+			Travian.Translation.add(
+			{
+				'hero_collapsed': 'Zobraziť viac informácií',
+				'hero_expanded': 'Schovať informácie'
+			});
+
+			var box = $('sidebarBoxHero');
+			box.down('button.toggle').addEvent('click', function(e)
+			{
+				Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'hero');
+			});
+		});
+	</script>
+</div>
+</div>
+</div>
+<div id="sidebarBoxInfobox" class="sidebarBox toggleable expanded ">
+<div class="sidebarBoxBaseBox">
+<div class="baseBox baseBoxTop">
+<div class="baseBox baseBoxBottom">
+<div class="baseBox baseBoxCenter"></div>
+</div>
+</div>
+</div>
+<div class="sidebarBoxInnerBox">
+<div class="innerBox header ">
+<div class="boxTitle">Info box</div>
+<span class="messageShortInfo">
+	‎&#x202d;&#x202d;2&#x202c;&times;&#x202c;‎<img class="messages" src="img/x.gif" alt="Celkovo spr&aacute;v: 2" title="Celkovo spr&aacute;v: 2" />
+</span>
+</div>
+<div class="innerBox content">
+<ul>
+<li id="infoID_21000" class="firstElement">
+<a class="infoboxDeleteButton" href="#" data-id="21000">
+<img src="img/x.gif" class="del" alt="del" />
+</a>
+#AskTravian - odpovědi na vaše otázky a jedno velké odhalení! <br /><a href="http://forum.travian.sk/showthread.php?t=18964" target="_blank">...více na fóru</a> </li>
+<li id="infoID_27775">
+		Počet hodín zostávajúcej začiatočníckej ochrany: <span class="timer" counting="down" value="415541">115:25:41</span> </li>
+</ul>
+</div>
+<div class="innerBox footer">
+<button type="button" class="toggle" onclick="" title="Schovať správy">
+<div class="button-container addHoverClick"></div>
+</button>
+<script type="text/javascript">
+		window.addEvent('domready', function()
+		{
+			Travian.Translation.add(
+			{
+				'infobox_collapsed': 'Zobraziť viac správ',
+				'infobox_expanded': 'Schovať správy'
+			});
+
+			var box = $('sidebarBoxInfobox');
+			box.down('button.toggle').addEvent('click', function(e)
+			{
+				Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'infobox');
+			});
+		});
+	</script>
+<script type="text/javascript">
+		window.addEvent('domready', function()
+		{
+			Travian.Game.Layout.setupInfoboxItemsDeletionWithMessage('Naozaj chceš nenávratne odstrániť túto správu?','Potvrdiť');
+		});
+</script> </div>
+</div>
+</div> <div class="clear"></div>
+</div>
+<div id="contentOuterContainer" class="size1">
+<ul id="stockBar">
+<li id="stockBarWarehouseWrapper" class="stock" title="Sklad surovín">
+<img class="warehouse" src="img/x.gif" alt="Sklad surovín" />
+<span class="value" id="stockBarWarehouse">800</span>
+</li>
+<li id="stockBarResource1" class="stockBarButton" title="Drevo||produkcia: 36&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;">
+<div class="begin"></div>
+<div class="middle">
+<img class="res r1Big" src="img/x.gif" alt="Drevo" />
+<span id="l1" class="value">800</span>
+<div class="barBox">
+<div id="lbar1" class="bar stockFull" style="width:100%;"></div>
+</div>
+<a href="production.php?t=1" title="Drevo||produkcia: 36&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;"><img src="img/x.gif" alt="" /></a>
+</div>
+<div class="end"></div>
+</li>
+<li id="stockBarResource2" class="stockBarButton" title="Hlina||produkcia: 36&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;">
+<div class="begin"></div>
+<div class="middle">
+<img class="res r2Big" src="img/x.gif" alt="Hlina" />
+<span id="l2" class="value">800</span>
+<div class="barBox">
+<div id="lbar2" class="bar stockFull" style="width:100%;"></div>
+</div>
+<a href="production.php?t=2" title="Hlina||produkcia: 36&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;"><img src="img/x.gif" alt="" /></a>
+</div>
+<div class="end"></div>
+</li>
+<li id="stockBarResource3" class="stockBarButton" title="Železo||produkcia: 36&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;">
+<div class="begin"></div>
+<div class="middle">
+<img class="res r3Big" src="img/x.gif" alt="Železo" />
+<span id="l3" class="value">800</span>
+<div class="barBox">
+<div id="lbar3" class="bar stockFull" style="width:100%;"></div>
+</div>
+<a href="production.php?t=3" title="Železo||produkcia: 36&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;"><img src="img/x.gif" alt="" /></a>
+</div>
+<div class="end"></div>
+</li>
+<li id="stockBarGranaryWrapper" class="stock" title="Sýpka">
+<img class="granary" src="img/x.gif" alt="Sýpka" />
+<span class="value" id="stockBarGranary">800</span>
+</li>
+<li id="stockBarResource4" class="stockBarButton" title="Obilie||Produkcia zn&iacute;žen&aacute; o spotrebu budov: 46&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;">
+<div class="begin"></div>
+<div class="middle">
+<img class="res r4Big" src="img/x.gif" alt="Obilie" />
+<span id="l4" class="value">800</span>
+<div class="barBox">
+<div id="lbar4" class="bar stockFull" style="width:100%;"></div>
+</div>
+<a href="production.php?t=4" title="Obilie||Produkcia zn&iacute;žen&aacute; o spotrebu budov: 46&lt;br /&gt;Pln&eacute; o: teraz&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;"><img src="img/x.gif" alt="" /></a>
+</div>
+<div class="end"></div>
+</li>
+<li id="stockBarFreeCropWrapper" class="stockBarButton r5">
+<div class="begin"></div>
+<div class="middle">
+<img class="res r5Big" src="img/x.gif" alt="Spotreba obilia" />
+<span id="stockBarFreeCrop" class="value">16</span>
+<a href="production.php?t=5" title="Voľn&eacute; obilie pre ďal&scaron;ie budovy.||spotreba/produkcia: &lrm;‭‭40‬‬&lrm;&lt;br /&gt;Klikni pre viac inform&aacute;ci&iacute;"><img src="img/x.gif" alt="" /></a>
+</div>
+<div class="end"></div>
+</li>
+<li class="clear">&nbsp;</li>
+</ul>
+<script type="text/javascript">
+	var resources = new Object();
+
+	resources.production = {
+		"l1": 36,"l2": 36,"l3": 36,"l4": 40,"l5": 16	};
+	resources.storage = {
+		"l1": 800,"l2": 800,"l3": 800,"l4": 800	};
+	resources.maxStorage = {
+		"l1": 800,"l2": 800,"l3": 800,"l4": 800	};
+
+	$$('li.stockBarButton').each(function(element)
+	{
+		Travian.addMouseEvents(element, element);
+	});
+
+	var stockBarWarehouse   = $('stockBarWarehouse');
+	var stockBarGranary     = $('stockBarGranary');
+	var stockBarFreeCrop = $('stockBarFreeCrop');
+	var numberFormatter = new Travian.Formatter({forceDecimal:false});
+
+	stockBarWarehouse.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarWarehouse.get('html'))));
+	stockBarGranary.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarGranary.get('html'))));
+	stockBarFreeCrop.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarFreeCrop.get('html'))));
+
+</script> <div class="contentTitle">
+<a id="closeContentButton" class="contentTitleButton" href="dorf1.php" title="Zavrieť okno">&nbsp;</a>
+<a id="answersButton" class="contentTitleButton" href="http://t4.answers.travian.sk/index.php?aid=26#go2answer" target="_blank" title="Travian Answers">&nbsp;</a> </div>
+<div class="contentContainer">
+<div id="content" class="village1">
+<map name="rx" id="rx">
+<area href="build.php?id=1" coords="137,88,28" shape="circle" title='Drevorubač &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;50
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Drevorubač Úroveň 0"></area><area href="build.php?id=2" coords="227,89,28" shape="circle" title='Obiln&eacute; pole &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;90
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;20
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Obilné pole Úroveň 0"></area><area href="build.php?id=3" coords="295,101,28" shape="circle" title='Drevorubač &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;50
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Drevorubač Úroveň 0"></area><area href="build.php?id=4" coords="79,127,28" shape="circle" title='Železn&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;30
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Železná baňa Úroveň 0"></area><area href="build.php?id=5" coords="192,140,28" shape="circle" title='Hlinen&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;50
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Hlinená baňa Úroveň 0"></area><area href="build.php?id=6" coords="249,147,28" shape="circle" title='Hlinen&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;50
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Hlinená baňa Úroveň 0"></area><area href="build.php?id=7" coords="334,145,28" shape="circle" title='Železn&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;30
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Železná baňa Úroveň 0"></area><area href="build.php?id=8" coords="19,178,28" shape="circle" title='Obiln&eacute; pole &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;90
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;20
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Obilné pole Úroveň 0"></area><area href="build.php?id=9" coords="100,179,28" shape="circle" title='Obiln&eacute; pole &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;90
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;20
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Obilné pole Úroveň 0"></area><area href="build.php?id=10" coords="290,179,28" shape="circle" title='Železn&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;30
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Železná baňa Úroveň 0"></area><area href="build.php?id=11" coords="377,179,28" shape="circle" title='Železn&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;30
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Železná baňa Úroveň 0"></area><area href="build.php?id=12" coords="27,239,28" shape="circle" title='Obiln&eacute; pole &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;90
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;20
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Obilné pole Úroveň 0"></area><area href="build.php?id=13" coords="100,229,28" shape="circle" title='Obiln&eacute; pole &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;90
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;20
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Obilné pole Úroveň 0"></area><area href="build.php?id=14" coords="236,265,28" shape="circle" title='Drevorubač &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;50
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Drevorubač Úroveň 0"></area><area href="build.php?id=15" coords="358,234,28" shape="circle" title='Obiln&eacute; pole &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;90
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;70
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;20
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Obilné pole Úroveň 0"></area><area href="build.php?id=16" coords="131,319,28" shape="circle" title='Hlinen&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;50
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Hlinená baňa Úroveň 0"></area><area href="build.php?id=17" coords="222,324,28" shape="circle" title='Drevorubač &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;100
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;50
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;60
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Drevorubač Úroveň 0"></area><area href="build.php?id=18" coords="312,301,28" shape="circle" title='Hlinen&aacute; baňa &lt;span class="level"&gt;&Uacute;roveň 0&lt;/span&gt;||Cena v&yacute;stavby na &uacute;roveň 1:&lt;br /&gt;
+					&lt;div class="showCosts"&gt;
+				&lt;span class="resources r1"&gt;
+				&lt;img class="r1" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r2"&gt;
+				&lt;img class="r2" src="img/x.gif" /&gt;40
+				&lt;/span&gt; 
+				&lt;span class="resources r3"&gt;
+				&lt;img class="r3" src="img/x.gif" /&gt;80
+				&lt;/span&gt; 
+				&lt;span class="resources r4"&gt;
+				&lt;img class="r4" src="img/x.gif" /&gt;50
+				&lt;/span&gt; &lt;div class="clear"&gt;&lt;/div&gt;' alt="Hlinená baňa Úroveň 0"> </area><area href="dorf2.php" coords="197,191,32" shape="circle" title="Centrum dediny" alt="Centrum dediny">
+</area></map>
+<img id="resfeld" usemap="#rx" src="img/x.gif" alt="" />
+<div id="village_map" class="f3">
+<div class="level colorLayer good gid1 level0" style="left: 179px; top:78px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid4 level0" style="left: 269px; top:79px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid1 level0" style="left: 337px; top:91px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid3 level0" style="left: 121px; top:117px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid2 level0" style="left: 234px; top:130px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid2 level0" style="left: 291px; top:137px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid3 level0" style="left: 376px; top:135px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid4 level0" style="left: 61px; top:168px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid4 level0" style="left: 142px; top:169px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid3 level0" style="left: 332px; top:169px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid3 level0" style="left: 419px; top:169px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid4 level0" style="left: 69px; top:229px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid4 level0" style="left: 142px; top:219px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid1 level0" style="left: 278px; top:255px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid4 level0" style="left: 400px; top:224px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid2 level0" style="left: 173px; top:309px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid1 level0" style="left: 264px; top:314px;">
+<div class="labelLayer"></div>
+</div>
+<div class="level colorLayer good gid2 level0" style="left: 354px; top:291px;">
+<div class="labelLayer"></div>
+</div>
+</div>
+<div id="map_details">
+<div class="movements">
+</div>
+<div class="boxes villageList production">
+<div class="boxes-tl"></div>
+<div class="boxes-tr"></div>
+<div class="boxes-tc"></div>
+<div class="boxes-ml"></div>
+<div class="boxes-mr"></div>
+<div class="boxes-mc"></div>
+<div class="boxes-bl"></div>
+<div class="boxes-br"></div>
+<div class="boxes-bc"></div>
+<div class="boxes-contents cf"><table id="production" cellpadding="1" cellspacing="1">
+<thead>
+<tr>
+<th colspan="4">
+				Produkcia za hodinu:			</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ico">
+<div>
+<img class="r1Big" src="img/x.gif" alt="Drevo" title="Drevo" />
+</div>
+</td>
+<td class="res">
+				Drevo:
+			</td>
+<td class="num">
+                				‎&#x202d;&#x202d;36&#x202c;&#x202c;‎			</td>
+</tr>
+<tr>
+<td class="ico">
+<div>
+<img class="r2Big" src="img/x.gif" alt="Hlina" title="Hlina" />
+</div>
+</td>
+<td class="res">
+				Hlina:
+			</td>
+<td class="num">
+                				‎&#x202d;&#x202d;36&#x202c;&#x202c;‎			</td>
+</tr>
+<tr>
+<td class="ico">
+<div>
+<img class="r3Big" src="img/x.gif" alt="Železo" title="Železo" />
+</div>
+</td>
+<td class="res">
+				Železo:
+			</td>
+<td class="num">
+                				‎&#x202d;&#x202d;36&#x202c;&#x202c;‎			</td>
+</tr>
+<tr>
+<td class="ico">
+<div>
+<img class="r4Big" src="img/x.gif" alt="Obilie" title="Obilie" />
+</div>
+</td>
+<td class="res">
+				Obilie:
+			</td>
+<td class="num">
+                				‎&#x202d;&#x202d;40&#x202c;&#x202c;‎			</td>
+</tr>
+</tbody>
+</table>
+<div>
+<button type="button" value="‎‭+‭25‬%‬‎" id="button595a3bcd5b539" class="gold productionBoostButton" title="Viac informácií o produkčnom bonuse.">
+<div class="button-container addHoverClick">
+<div class="button-background">
+<div class="buttonStart">
+<div class="buttonEnd">
+<div class="buttonMiddle"></div>
+</div>
+</div>
+</div>
+<div class="button-content">‎&#x202d;&#43;&#x202d;25&#x202c;&#37;&#x202c;‎</div>
+</div>
+</button>
+<script type="text/javascript" id="button595a3bcd5b539_script">
+	window.addEvent('domready', function() {
+        if($('button595a3bcd5b539')) {
+            $('button595a3bcd5b539').addEvent('click', function () {
+                window.fireEvent('buttonClicked', [this, {"type":"button","value":"\u200e\u0026#x202d;\u0026#43;\u0026#x202d;25\u0026#x202c;\u0026#37;\u0026#x202c;\u200e","name":"","id":"button595a3bcd5b539","class":"gold productionBoostButton","title":"Viac inform\u00e1ci\u00ed o produk\u010dnom bonuse.","confirm":"","onclick":"","productionBoostDialog":{"infoIcon":"http:\/\/t4.answers.travian.sk\/index.php?aid=N\u00e1poveda#go2answer"}}]);
+            });
+        }
+	});
+</script>
+</div>
+</div>
+</div>
+<div class="boxes villageList units">
+<div class="boxes-tl"></div>
+<div class="boxes-tr"></div>
+<div class="boxes-tc"></div>
+<div class="boxes-ml"></div>
+<div class="boxes-mr"></div>
+<div class="boxes-mc"></div>
+<div class="boxes-bl"></div>
+<div class="boxes-br"></div>
+<div class="boxes-bc"></div>
+<div class="boxes-contents cf"><table id="troops" cellpadding="1" cellspacing="1">
+<thead><tr>
+<th colspan="3">Jednotky:</th>
+</tr></thead><tbody>
+<tr>
+<td class="ico"><a href="build.php?gid=16#td"><img class="unit uhero" src="img/x.gif" alt="Hrdina" title="Hrdina" /></a></td>
+<td class="num">1</td>
+<td class="un">Hrdina</td>
+</tr>
+</tbody></table>
+</div>
+</div> <div class="clear"></div>
+</div>
+<div class="clear"></div>
+<iframe src="https://tracker.simplaex.net/v1/games/session?game_id=1061&amp;player_id=3468_sk2_20170619" width="0" height="0" frameborder="0"></iframe> <div class="clear"></div>
+</div>
+<div class="clear">&nbsp;</div>
+</div>
+<div class="contentFooter"></div>
+</div>
+<div id="sidebarAfterContent" class="sidebar afterContent ">
+<div id="sidebarBoxActiveVillage" class="sidebarBox   ">
+<div class="sidebarBoxBaseBox">
+<div class="baseBox baseBoxTop">
+<div class="baseBox baseBoxBottom">
+<div class="baseBox baseBoxCenter"></div>
+</div>
+</div>
+</div>
+<div class="sidebarBoxInnerBox">
+<div class="innerBox header ">
+<button type="button" id="button595a3bcd67df7" class="layoutButton workshopBlack gold disabled " onclick="return false;" title='Priame odkazy||Pre t&uacute;to funkciu potrebuje&scaron; mať akt&iacute;vny Travian Plus&lt;br /&gt;&lt;span class="warning"&gt;V dedine nie je postaven&aacute; Dielňa&lt;/span&gt;'>
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd67df7'))
+	{
+		$('button595a3bcd67df7').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"gold","onclick":"return false;","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","class":"","id":"button595a3bcd67df7","redirectUrl":"","redirectUrlExternal":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.sk\/index.php?aid=N\u00e1poveda#go2answer"}}]);
+		});
+	}
+</script><button type="button" id="button595a3bcd67f4c" class="layoutButton stableBlack gold disabled " onclick="return false;" title='Priame odkazy||Pre t&uacute;to funkciu potrebuje&scaron; mať akt&iacute;vny Travian Plus&lt;br /&gt;&lt;span class="warning"&gt;V dedine nie s&uacute; postaven&eacute; Stajne&lt;/span&gt;'>
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd67f4c'))
+	{
+		$('button595a3bcd67f4c').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"gold","onclick":"return false;","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","class":"","id":"button595a3bcd67f4c","redirectUrl":"","redirectUrlExternal":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.sk\/index.php?aid=N\u00e1poveda#go2answer"}}]);
+		});
+	}
+</script><button type="button" id="button595a3bcd68077" class="layoutButton barracksBlack gold disabled " onclick="return false;" title='Priame odkazy||Pre t&uacute;to funkciu potrebuje&scaron; mať akt&iacute;vny Travian Plus&lt;br /&gt;&lt;span class="warning"&gt;V dedine nie s&uacute; postaven&eacute; Kas&aacute;rne&lt;/span&gt;'>
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd68077'))
+	{
+		$('button595a3bcd68077').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"gold","onclick":"return false;","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","class":"","id":"button595a3bcd68077","redirectUrl":"","redirectUrlExternal":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.sk\/index.php?aid=N\u00e1poveda#go2answer"}}]);
+		});
+	}
+</script><button type="button" id="button595a3bcd681ad" class="layoutButton marketBlack gold disabled " onclick="return false;" title='Priame odkazy||Pre t&uacute;to funkciu potrebuje&scaron; mať akt&iacute;vny Travian Plus&lt;br /&gt;&lt;span class="warning"&gt;V dedine nie je postaven&eacute; trhovisko&lt;/span&gt;'>
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd681ad'))
+	{
+		$('button595a3bcd681ad').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"gold","onclick":"return false;","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","class":"","id":"button595a3bcd681ad","redirectUrl":"","redirectUrlExternal":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.sk\/index.php?aid=N\u00e1poveda#go2answer"}}]);
+		});
+	}
+</script>
+<div class="clear"></div>
+<div id="villageNameField" class="boxTitle">Dedina: Ashreen</div>
+</div>
+<div class="innerBox content">
+<div class="loyalty medium">
+	Lojalita: <span>‎&#x202d;&#x202d;100&#x202c;&#37;&#x202c;‎</span>
+</div> </div>
+<div class="innerBox footer">
+<button type="button" id="button595a3bcd689c6" class="layoutButton editWhite green  " onclick="return false;" title="Edituj n&aacute;zov dediny">
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd689c6'))
+	{
+		$('button595a3bcd689c6').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"green","onclick":"return false;","loadTitle":false,"boxId":"","disabled":false,"speechBubble":"","class":"","id":"button595a3bcd689c6","redirectUrl":"","redirectUrlExternal":"","title":"Dvojklikom m\u00f4\u017ee\u0161 zmeni\u0165 n\u00e1zov dediny.","villageDialog":{"title":"Zmena n\u00e1zvu dediny.","description":"Nov\u00fd n\u00e1zov dediny:","saveText":"Ulo\u017ei\u0165","villageId":"69918"}}]);
+		});
+	}
+</script> </div>
+</div>
+</div>
+<div id="sidebarBoxVillagelist" class="sidebarBox toggleable collapsed ">
+<div class="sidebarBoxBaseBox">
+<div class="baseBox baseBoxTop">
+<div class="baseBox baseBoxBottom">
+<div class="baseBox baseBoxCenter"></div>
+</div>
+</div>
+</div>
+<div class="sidebarBoxInnerBox">
+<div class="innerBox header ">
+<button type="button" id="button595a3bcd69dbf" class="layoutButton toggleCoordsWhite green  toggle" onclick="return false;" title="Uk&aacute;ž s&uacute;radnice">
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd69dbf'))
+	{
+		$('button595a3bcd69dbf').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"green","onclick":"return false;","loadTitle":false,"boxId":"","disabled":false,"speechBubble":"","class":"toggle","id":"button595a3bcd69dbf","redirectUrl":"","redirectUrlExternal":""}]);
+		});
+	}
+</script><button type="button" id="button595a3bcd69ef5" class="layoutButton overviewWhite green  " onclick="return false;" title="&Scaron;tatistika dediny">
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd69ef5'))
+	{
+		$('button595a3bcd69ef5').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"green","onclick":"return false;","loadTitle":false,"boxId":"","disabled":false,"speechBubble":"","class":"","id":"button595a3bcd69ef5","redirectUrl":"dorf3.php","redirectUrlExternal":""}]);
+		});
+	}
+</script>
+<div class="clear"></div>
+<div class="expansionSlotInfo" title="Dediny: ‎‭‭‭1‬‬/‭‭1‬‬‬‎&lt;/br&gt;Získané Kultúrne body na vytvorenie alebo prebratie ďalšej dediny: 500 / 2000">Získané Kultúrne body na vytvorenie alebo prebratie ďalšej dediny: 500 / 2000"&gt;
+	<div class="boxTitleAdditional">‎&#x202d;&#x202d;&#x202d;1&#x202c;&#x202c;/&#x202d;&#x202d;1&#x202c;&#x202c;&#x202c;‎</div>
+<div class="boxTitle">Dediny</div>
+<div class="villageListBarBox">
+<div class="bar" style="width:25%">&nbsp;</div>
+</div>
+</div>
+<script type="text/javascript">
+	window.addEvent('domready', function()
+	{
+				Travian.Translation.add(
+		{
+			'villagelist_collapsed': 'Ukáž súradnice',
+			'villagelist_expanded': 'Schovaj súradnice'
+		});
+
+		var box = $('sidebarBoxVillagelist');
+		box.down('button.toggle').addEvent('click', function(e)
+		{
+			Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'villagelist');
+		});
+	});
+	</script> </div>
+<div class="innerBox content">
+<ul>
+<li class=" active" title='Dedina: Ashreen &lrm;‭&lt;span class="coordinates coordinatesWrapper"&gt;&lt;span class="coordinateX"&gt;(‭-‭51‬‬&lt;/span&gt;&lt;span class="coordinatePipe"&gt;|&lt;/span&gt;&lt;span class="coordinateY"&gt;‭-‭29‬‬)&lt;/span&gt;&lt;/span&gt;‬&lrm;'>
+<a href="?newdid=69918&amp;" accesskey="b" class="active">
+<img src="img/x.gif" alt="" />
+<div class="name">Dedina: Ashreen</div>
+					‎&#x202d;<span class="coordinates coordinatesWrapper coordinatesAligned coordinatesLTR"><span class="coordinateX">(&#x202d;&#45;&#x202d;51&#x202c;&#x202c;</span><span class="coordinatePipe">|</span><span class="coordinateY">&#x202d;&#45;&#x202d;29&#x202c;&#x202c;)</span></span>&#x202c;‎				</a>
+</li>
+</ul>
+</div>
+<div class="innerBox footer">
+</div>
+</div>
+</div>
+<div id="sidebarBoxQuestmaster" class="sidebarBox   ">
+<div class="sidebarBoxBaseBox">
+<div class="baseBox baseBoxTop">
+<div class="baseBox baseBoxBottom">
+<div class="baseBox baseBoxCenter"></div>
+</div>
+</div>
+</div>
+<div class="sidebarBoxInnerBox">
+<div class="innerBox header ">
+<button id="questmasterButton" title="Zobraziť zoznam úloh" class="forceDisplayElement vid_2" type="button">
+<img class="border" alt="" src="img/x.gif" />
+<img class="animation" alt="" src="img/x.gif" />
+<img class="mentor" alt="" src="img/x.gif" />
+</button>
+<button type="button" id="button595a3bcd6aa16" class="layoutButton bulbWhite green  " onclick="return false;" title="Zobraziť n&aacute;povedu">
+<div class="button-container addHoverClick">
+<img src="img/x.gif" alt="" />
+</div>
+</button>
+<script type="text/javascript">
+	
+	if($('button595a3bcd6aa16'))
+	{
+		$('button595a3bcd6aa16').addEvent('click', function ()
+		{
+			window.fireEvent('buttonClicked', [this, {"type":"green","onclick":"return false;","loadTitle":false,"boxId":"","disabled":false,"speechBubble":"","class":"","id":"button595a3bcd6aa16","redirectUrl":"","redirectUrlExternal":"","overlay":[]}]);
+		});
+	}
+</script><div class="clear"></div>
+<div class="boxTitle">Vitaj</div>
+<script type="text/javascript">
+window.addEvent('domready', function()
+{
+	Travian.Game.Quest.setOptions(
+	{
+		isTutorial : true	});
+
+	// Dialog an den Questmaster binden
+	$('questmasterButton').addEvent('click', function()
+	{
+		Travian.Game.Quest.mentorClick('Tutorial_01');
+	});
+});
+</script>
+<div>
+<script type="text/javascript">
+	
+                        Travian.Game.Quest.createHighlights();
+
+                        $$('.questInformation .iconButton.small.cancel').addEvent('click', function()
+                        {
+                        setTimeout(function() {
+                        Travian.Game.Quest.createHighlights();
+                        }, 500);
+                        });
+                    </script></div> </div>
+<div class="innerBox content">
+<ul id="mentorTaskList">
+<li>
+<a href="#" class="tutorial" onclick="$('questmasterButton').click(); return false;">
+										Začni tutoriál				</a>
+</li>
+<script type="text/javascript">
+		Travian.Translation.add('answers.tutorial_01_title', "Travian Answers");
+	</script>
+</ul>
+<script type="text/javascript">
+	window.addEvent('domready', function()
+	{
+		Travian.Game.Quest.setOptions(
+		{
+			tipsTurnoffAjaxTrigger: false,
+			tutorialData: {"id":"Tutorial_01","name":"questV2.tutorial_01_name","category":"tutorial","stepType":"task","currentStep":0,"stepCount":1,"steps":[{"stepId":0,"type":"task","stepDescription":"questV2.tutorial_01_step_01_layoutdescription"}],"answersLink":"http:\/\/t4.answers.travian.sk\/index.php?aid=332#go2answer"},
+			highlightSelectors: [{"selector":".dialog.questInformation .questButtonNext","renderer":"rectangle"},{"selector":"#questmasterButton","renderer":"rectangle"}]		});
+
+        Travian.Game.Quest.addListData(
+            []        );
+
+		Travian.Game.Quest.bindListDelegation();
+		Travian.Game.Quest.createHighlights();
+		Travian.Game.Quest.initializeQuests();
+	});
+</script>
+</div>
+<div class="innerBox footer">
+</div>
+</div>
+</div> <div class="clear"></div>
+</div>
+<div class="clear"></div>
+</div>
+<div id="footer" class="size1">
+<div id="pageLinks">
+<a href="http://www.travian.sk/" target="_blank">Úvod</a>
+<a href="http://forum.travian.sk" target="_blank">Fórum</a>
+<a href="http://www.travian.sk/links.php" target="_blank">Odkazy</a>
+<a href="http://t4.answers.travian.sk/" target="_blank">FAQ - Answers</a>
+<a href="http://www.travian.sk/spielregeln.php" target="_blank">Pravidlá hry</a>
+<a href="http://www.travian.sk/agb.php" target="_blank">VOP</a>
+<a href="http://www.travian.sk/impressum.php" target="_blank">O nás</a>
+<div class="clear"></div>
+</div>
+<p class="copyright">© 2004 - 2017 Travian Games GmbH</p>
+</div>
+<div id="servertime" class="stime">
+	Čas serveru:&nbsp;
+	<span class="timer" counting="up" value="1499085773">14:42:53</span></div> </div>
+<div id="ce"></div>
+</div>
+<script type="text/javascript">
+			var T4_feature_flags = {"vacationMode":true,"territory":false,"heroitems":true,"allianceBonus":true,"boostedStart":false,"pushingProtectionAlways":false};
+		</script>
+</body>
+</html>
