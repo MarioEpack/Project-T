@@ -25,8 +25,6 @@ r2 = session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.co
 r3 = session.get('http://ts2.travian.sk/dorf2.php', cookies=r2.cookies)
 unicodeData = r3.text
 my_soup = BeautifulSoup(unicodeData)
-print type(unicodeData)
-print type(my_soup)
 
 file = open("testfile.txt","w")
 file.write(str(my_soup))
