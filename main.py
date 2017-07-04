@@ -1,4 +1,5 @@
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QThread, SIGNAL
 import sys
 import requests
 import re
@@ -10,7 +11,50 @@ import design
 from login import Ui_Dialog
 ####
 
-nameT, serverT, passwordT = 0, 0, 0
+loginDetails = {}
+
+class UpdateTab1(QThread):
+
+    def __init__(self):
+        QThread.__init__(self)
+
+    def __del__(self):
+        self.wait()
+
+    def getCookies(self):
+        global loginDetails
+        r1 = requests.get('http://ts2.travian.sk/login.php')
+        unicodeData = r1.text
+        unicodeData.encode('ascii', 'ignore')
+        soup = BeautifulSoup(unicodeData, 'html.parser')
+        tags = soup('input')
+        value_list = []
+
+        for tag in tags:
+            value_list.append(tag.get('value', None))
+
+        my_id = value_list[4]
+
+        payload = {'login': my_id, 
+                   'name': "Ashreen", 
+                   'password': "testing", 
+                   's1': 'Login', 
+                   'w': '1920:1080'}
+        session = requests.Session()
+
+        session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
+        return session
+
+    def run(self):        
+        session = self.getCookies()
+        r3 = session.get('http://ts2.travian.sk/dorf1.php')
+        unicodeData = r3.text
+        my_soup = BeautifulSoup(unicodeData, 'html.parser')
+
+        file = open("testfile.txt","w")
+        file.write(str(my_soup))
+        file.close()
+        self.emit(SIGNAL('change_label(QString)'), "unicodeData")
 
 class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
@@ -20,10 +64,26 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         dlg = StartLogin()  # Open login form before GUI is shown
         if dlg.exec_():     # Load data into global variables
             values = dlg.getValues()
-            global nameT, serverT, passwordT 
-            nameT = values['name']
-            serverT = values['server']
-            passwordT = values['password']
+            global loginDetails
+            loginDetails['name'] = values['name']
+            loginDetails['password'] = values['password']
+
+        self.start_update_tab1()
+        self.btn_update.clicked.connect(self.start_update_tab1)
+
+    def start_update_tab1(self):
+        self.get_thread = UpdateTab1()
+        self.connect(self.get_thread, SIGNAL("change_label(QString)"), self.change_label)
+        self.connect(self.get_thread, SIGNAL("finished()"), self.done)
+        self.get_thread.start()
+        self.btn_update.setEnabled(False)
+
+    def change_label(self, text):
+        self.label.setText(text)
+
+    def done(self):
+        self.btn_update.setEnabled(True)
+        QtGui.QMessageBox.information(self, "Done!", "Done fetching data!")
 
 class StartLogin(QtGui.QDialog, Ui_Dialog):
     def __init__(self,parent=None):
