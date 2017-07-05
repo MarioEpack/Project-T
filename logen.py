@@ -30,7 +30,7 @@ unicodeData = r3.text
 my_soup = BeautifulSoup(unicodeData, 'html.parser')
 
 my_file = Path("/home/epack/Pythonstuff/TravianProject/testfile.txt")
-#Ak uz subor existuje tak ho nebudem vytvarat znova
+#Ak uz subor existuje tak ho nebudem vytvarat znova, zmen si tento path na svoj
 if my_file.is_file() == False:
     file = open("testfile.txt","w")
     file.write(str(my_soup))
@@ -39,36 +39,96 @@ if my_file.is_file() == False:
 
 ######
 ###### Scraping the basic info
-mish_mash = my_soup.find_all('span')
-#drevo = l1, hlina = l2, zelezo = l3, obilie = l4 , treba to vybrat z mish_mash
-mish_mash = list(mish_mash)
-#Zhruba vybrate zatial
-warehouse = mish_mash[4]
-granary = mish_mash[8]
-lumber = mish_mash[5]
-clay = mish_mash[6]
-iron = mish_mash[7]
-crop = mish_mash[9]
-storage = [lumber, clay, iron, crop]
-ware_and_granary = [warehouse, granary]
+#STORAGE
+#drevo = l1, hlina = l2, zelezo = l3, obilie = l4 , treba to vybrat zo soup_storage
+lumber_storage = my_soup.find(id= "l1")
+clay_storage = my_soup.find(id= "l2")
+iron_storage = my_soup.find(id= "l3")
+crop_storage = my_soup.find(id= "l4")
+granary_storage = my_soup.find(id="stockBarGranary")
+warehouse_storage = my_soup.find(id="stockBarWarehouse")
+#PRODUCTION
+soup_lumber_prod = my_soup.find(href="production.php?t=1")
+soup_clay_prod = my_soup.find(href="production.php?t=2")
+soup_iron_prod = my_soup.find(href="production.php?t=3")
+soup_crop_prod = my_soup.find(href="production.php?t=4")
 
-def update_stock():
-    for stock in storage:
-        value_re = re.findall(r'\d', str(stock))
-        value_re.remove(value_re[0])
-        value = ''.join(value_re)
-        print value
-        
+#UPDATE STORAGE FUNCTIONS
 
-def update_gra_and_ware():
-    for stock in ware_and_granary:
-        value_re = re.findall(r'\d', str(stock))
-        value = ''.join(value_re)
-        print value
+def update_lumber_stock():
+    value_re = re.findall(r'\d', str(lumber_storage))
+    value_re.remove(value_re[0])
+    value = ''.join(value_re)
+    return value + ' lumber stock.'
+
+def update_clay_stock():
+    value_re = re.findall(r'\d', str(clay_storage))
+    value_re.remove(value_re[0])
+    value = ''.join(value_re)
+    return value + ' clay stock.'
+
+def update_iron_stock():
+    value_re = re.findall(r'\d', str(iron_storage))
+    value_re.remove(value_re[0])
+    value = ''.join(value_re)
+    return value + ' iron stock.'
+
+def update_crop_stock():
+    value_re = re.findall(r'\d', str(crop_storage))
+    value_re.remove(value_re[0])
+    value = ''.join(value_re)
+    return value + ' crop stock.'
+
+def update_warehouse():
+    value_re = re.findall(r'\d', str(warehouse_storage))
+    value = ''.join(value_re)
+    return value + ' current warehouse stock.'
+
+def update_granary():
+    value_re = re.findall(r'\d', str(granary_storage))
+    value = ''.join(value_re)
+    return value + ' current granary stock.'
+
+#UPDATE PRODUCTION FUNCTIONS       
+
+def update_lumber_prod():
+    lumber_prod = re.findall(r'\d', str(soup_lumber_prod))
+    lumber_prod.remove(lumber_prod[0])
+    lumber = ''.join(lumber_prod)
+    return lumber + ' lumber production'
+
+def update_clay_prod():
+    lumber_prod = re.findall(r'\d', str(soup_clay_prod))
+    lumber_prod.remove(lumber_prod[0])
+    lumber = ''.join(lumber_prod)
+    return lumber + ' clay production'
+
+def update_iron_prod():
+    lumber_prod = re.findall(r'\d', str(soup_iron_prod))
+    lumber_prod.remove(lumber_prod[0])
+    lumber = ''.join(lumber_prod)
+    return lumber + ' iron production'
+
+def update_crop_prod():
+    lumber_prod = re.findall(r'\d', str(soup_crop_prod))
+    lumber_prod.remove(lumber_prod[0])
+    lumber = ''.join(lumber_prod)
+    return lumber + ' crop production'
+
         
 
 def total_update():
-    update_stock()
-    update_gra_and_ware()
+    print update_lumber_stock()
+    print update_crop_stock()
+    print update_iron_stock()
+    print update_clay_stock()
+    print update_warehouse()
+    print update_granary()
+
+    print update_lumber_prod()
+    print update_clay_prod()
+    print update_iron_prod()
+    print update_crop_prod()
+
 
 total_update()
