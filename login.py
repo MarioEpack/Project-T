@@ -35,15 +35,20 @@ class Ui_Dialog(object):
         self.comboBox = QtGui.QComboBox(Dialog)
         self.comboBox.setGeometry(QtCore.QRect(100, 50, 111, 22))
         self.comboBox.setObjectName(_fromUtf8("comboBox"))
+        self.comboBox.addItem(_fromUtf8(""))
+        self.comboBox.addItem(_fromUtf8(""))
         self.pushButton = QtGui.QPushButton(Dialog)
         self.pushButton.setGeometry(QtCore.QRect(240, 230, 75, 23))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
 
         self.retranslateUi(Dialog)
+        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), Dialog.accept)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog", None))
+        self.comboBox.setItemText(0, _translate("Dialog", "ts2.travian.sk", None))
+        self.comboBox.setItemText(1, _translate("Dialog", "ts3.travian.sk", None))
         self.pushButton.setText(_translate("Dialog", "Login", None))
 
 

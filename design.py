@@ -39,6 +39,9 @@ class Ui_MainWindow(object):
         self.label_2 = QtGui.QLabel(self.tab)
         self.label_2.setGeometry(QtCore.QRect(70, 60, 46, 13))
         self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.btn_update = QtGui.QPushButton(self.tab)
+        self.btn_update.setGeometry(QtCore.QRect(610, 450, 75, 23))
+        self.btn_update.setObjectName(_fromUtf8("btn_update"))
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
@@ -60,6 +63,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Project T", None))
         self.label.setText(_translate("MainWindow", "TextLabel", None))
         self.label_2.setText(_translate("MainWindow", "TextLabel", None))
+        self.btn_update.setText(_translate("MainWindow", "Update", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Tab 1", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2", None))
 
