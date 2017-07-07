@@ -89,8 +89,8 @@ def total_update():
 
 #SQLITE execute
 
-def sqlite_update():
 
+def sqlite_update(my_soup):
     #SQLITE code
     conn = sqlite3.connect('travdate.sqlite')
     cur = conn.cursor()
@@ -120,13 +120,12 @@ def sqlite_update():
     ''')
 
     cur.execute('''INSERT INTO resources(lumber, clay, iron, crop, lumber_prod,
-    clay_prod, iron_prod, crop_prod) VALUES (?, ?, ?, ?, ?, ?, ?)''',
-    (update_lumber_stock(), update_clay_stock(), update_iron_stock(), 
-        update_crop_stock(), update_lumber_prod(),update_clay_prod(),
-        update_iron_prod(), update_crop_prod()))
+    clay_prod, iron_prod, crop_prod) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+    (update_lumber_stock(my_soup), update_clay_stock(my_soup), update_iron_stock(my_soup), 
+        update_crop_stock(my_soup), update_lumber_prod(my_soup),update_clay_prod(my_soup),
+        update_iron_prod(my_soup), update_crop_prod(my_soup)))
 
     cur.execute('''INSERT INTO storage(warehouse, grannary) VALUES(?, ?)''',
-        (update_warehouse(), update_granary()))
-
-
+        (update_warehouse(my_soup), update_granary(my_soup)))
+    
     conn.commit()
