@@ -9,7 +9,9 @@ from bs4 import BeautifulSoup
 #### GUI modules
 import design 
 from login import Ui_Dialog
-####
+#### Processing modules
+from updates import *
+
 
 loginDetails = {}
 
@@ -36,10 +38,12 @@ class UpdateTab1(QThread):
         my_id = value_list[4]
 
         payload = {'login': my_id, 
-                   'name': "Ashreen", 
-                   'password': "testing", 
+                   'name': str(loginDetails["name"]), 
+                   'password': str(loginDetails["password"]), 
                    's1': 'Login', 
                    'w': '1920:1080'}
+
+
         session = requests.Session()
 
         session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
@@ -51,10 +55,8 @@ class UpdateTab1(QThread):
         unicodeData = r3.text
         my_soup = BeautifulSoup(unicodeData, 'html.parser')
 
-        file = open("testfile.txt","w")
-        file.write(str(my_soup))
-        file.close()
-        self.emit(SIGNAL('change_label(QString)'), "unicodeData")
+        sqlite_update(my_soup)
+        self.emit(SIGNAL('change_label(QString)'), loginDetails["name"])
 
 class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
