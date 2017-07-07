@@ -118,17 +118,15 @@ def total_update():
 
 #SQLITE execute
 
-cur.execute('''INSERT INTO resources(lumber, clay, iron, crop, lumber_prod,
-clay_prod, iron_prod, crop_prod) VALUES (?, ?, ?, ?, ?, ?, ?)''',
-(update_lumber_stock(), update_clay_stock(), update_iron_stock(), 
-    update_crop_stock(), update_lumber_prod(),update_clay_prod(),
-    update_iron_prod(), update_crop_prod()))
+def sqlite_update():
+    cur.execute('''INSERT INTO resources(lumber, clay, iron, crop, lumber_prod,
+    clay_prod, iron_prod, crop_prod) VALUES (?, ?, ?, ?, ?, ?, ?)''',
+    (update_lumber_stock(), update_clay_stock(), update_iron_stock(), 
+        update_crop_stock(), update_lumber_prod(),update_clay_prod(),
+        update_iron_prod(), update_crop_prod()))
 
-cur.execute('''INSERT INTO storage(warehouse, grannary) VALUES(?, ?)''',
-    (update_warehouse(), update_granary()))
-
-
-conn.commit()
+    cur.execute('''INSERT INTO storage(warehouse, grannary) VALUES(?, ?)''',
+        (update_warehouse(), update_granary()))
 
 
-
+    conn.commit()
