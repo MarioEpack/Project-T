@@ -2,35 +2,6 @@ import re
 from bs4 import BeautifulSoup
 import sqlite3
 
-#SQLITE code
-conn = sqlite3.connect('travdate.sqlite')
-cur = conn.cursor()
-
-cur.executescript('''
-DROP TABLE IF EXISTS resources;
-DROP TABLE IF EXISTS storage;
-
-CREATE TABLE resources (
-    village_id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    lumber       INTEGER NOT NULL,
-    clay         INTEGER NOT NULL,
-    iron         INTEGER NOT NULL,
-    crop         INTEGER NOT NULL,
-    lumber_prod  INTEGER NOT NULL,
-    clay_prod    INTEGER NOT NULL,
-    iron_prod    INTEGER NOT NULL,
-    crop_prod    INTEGER NOT NULL
-);
-
-CREATE TABLE storage (
-    village_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    warehouse   INTEGER NOT NULL,
-    grannary    INTEGER NOT NULL
-
-)
-''')
-
-
 #Scraping the updates
 #UPDATE STORAGE FUNCTIONS
 
@@ -119,6 +90,35 @@ def total_update():
 #SQLITE execute
 
 def sqlite_update():
+
+    #SQLITE code
+    conn = sqlite3.connect('travdate.sqlite')
+    cur = conn.cursor()
+
+    cur.executescript('''
+    DROP TABLE IF EXISTS resources;
+    DROP TABLE IF EXISTS storage;
+
+    CREATE TABLE resources (
+        village_id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        lumber       INTEGER NOT NULL,
+        clay         INTEGER NOT NULL,
+        iron         INTEGER NOT NULL,
+        crop         INTEGER NOT NULL,
+        lumber_prod  INTEGER NOT NULL,
+        clay_prod    INTEGER NOT NULL,
+        iron_prod    INTEGER NOT NULL,
+        crop_prod    INTEGER NOT NULL
+    );
+
+    CREATE TABLE storage (
+        village_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        warehouse   INTEGER NOT NULL,
+        grannary    INTEGER NOT NULL
+
+    )
+    ''')
+
     cur.execute('''INSERT INTO resources(lumber, clay, iron, crop, lumber_prod,
     clay_prod, iron_prod, crop_prod) VALUES (?, ?, ?, ?, ?, ?, ?)''',
     (update_lumber_stock(), update_clay_stock(), update_iron_stock(), 
