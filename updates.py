@@ -89,8 +89,8 @@ def total_update():
 
 #SQLITE execute
 
-def sqlite_update(my_soup):
 
+def sqlite_update(my_soup):
     #SQLITE code
     conn = sqlite3.connect('travdate.sqlite')
     cur = conn.cursor()
@@ -127,6 +127,5 @@ def sqlite_update(my_soup):
 
     cur.execute('''INSERT INTO storage(warehouse, grannary) VALUES(?, ?)''',
         (update_warehouse(my_soup), update_granary(my_soup)))
-
-
+    
     conn.commit()
