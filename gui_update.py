@@ -11,16 +11,21 @@ def ui_update(update):
     cur.execute('''SELECT * FROM resources WHERE village_id=?''', (village_id,))
     data = cur.fetchone()
     
-    lumber = data[1], clay = data[2], iron = data[3], crop = data[4]
-    lumber_prod = data[5], clay_prod = data[6], iron_prod = data[7]
+    lumber = data[1]; clay = data[2]; iron = data[3]; crop = data[4]
+    lumber_prod = data[5]; clay_prod = data[6]; iron_prod = data[7]
     crop_prod = data[8]
 
-    cur.execute('''SELECT * FROM storage WHERE village_id=?''', (village_id))
+    cur.execute('''SELECT * FROM storage WHERE village_id=?''', (village_id,))
     data = cur.fetchone()
-    warehouse = data[1], grannary = data[2]
+    warehouse = data[1]; grannary = data[2]
+
+    lumber_txt = "Lumber: %s / %s / %s" % (lumber, warehouse, lumber_prod)
+    clay_txt = "Clay: %s / %s / %s" % (clay, warehouse, clay_prod)
+    iron_txt = "Iron: %s / %s / %s" % (iron, warehouse, iron_prod)
+    crop_txt = "Crop: %s / %s / %s" % (crop, grannary, crop_prod)
 
     update.lbl_header.setText("Current / Max / Production")
-    update.lbl_lumber.setText("Lumber: {1} / {2} / {3}").format(lumber, warehouse, lumber_prod)
-    update.lbl_clay.setText("Clay: {1} / {2} / {3}").format(clay, warehouse, clay_prod)
-    update.lbl_iron.setText("Iron: {1} / {2} / {3}").format(iron, warehouse, iron_prod)
-    update.lbl_crop.setText("Crop: {1} / {2} / {3}").format(crop, granary, crop_prod)
+    update.lbl_lumber.setText(lumber_txt)
+    update.lbl_clay.setText(clay_txt)
+    update.lbl_iron.setText(iron_txt)
+    update.lbl_crop.setText(crop_txt)
