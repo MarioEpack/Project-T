@@ -2,6 +2,11 @@ import sqlite3
 #This file is updating GUI via the sqlite database
 
 def ui_update(update):
+
+
+    conn = sqlite3.connect('travdate.sqlite')
+    cur = conn.cursor()
+
     village_id = 1
     cur.execute('''SELECT * FROM resources WHERE village_id=?''', (village_id,))
     data = conn.fetchone()
@@ -12,7 +17,6 @@ def ui_update(update):
 
     cur.execute('''SELECT * FROM storage WHERE village_id=?''', (village_id))
     data = conn.fetchone()
-    #warehouse1, grannary2
     warehouse = data[1], grannary = data[2]
 
     update.lbl_header.setText("Current / Max / Production")
@@ -20,8 +24,3 @@ def ui_update(update):
     update.lbl_clay.setText("Clay: {1} / {2} / {3}").format(clay, warehouse, clay_prod)
     update.lbl_iron.setText("Iron: {1} / {2} / {3}").format(iron, warehouse, iron_prod)
     update.lbl_crop.setText("Crop: {1} / {2} / {3}").format(crop, granary, crop_prod)
-
-
-conn = sqlite3.connect('travdate.sqlite')
-cur = conn.cursor()
-ui_update(update)
