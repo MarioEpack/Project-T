@@ -1,45 +1,27 @@
 import sqlite3
-#This file is updating GUI via the sqlite database info
+#This file is updating GUI via the sqlite database
 
-def Ui_update(update):
+def ui_update(update):
+    village_id = 1
+    cur.execute('''SELECT * FROM resources WHERE village_id=?''', (village_id,))
+    data = conn.fetchone()
+    
+    lumber = data[1], clay = data[2], iron = data[3], crop = data[4]
+    lumber_prod = data[5], clay_prod = data[6], iron_prod = data[7]
+    crop_prod = data[8]
 
-    conn.execute("SELECT warehouse FROM storage")
-    storage = conn.fetchone()
+    cur.execute('''SELECT * FROM storage WHERE village_id=?''', (village_id))
+    data = conn.fetchone()
+    #warehouse1, grannary2
+    warehouse = data[1], grannary = data[2]
 
-    def header_update(update):
-        update.label_header.setText("Current / Max / Production")
-
-    def lumber_update(update):
-        update.label_lumber.setText("Lumber: {1} / {2}  / {3}").format(lumber, warehouse, lumber_prod)
-        conn.execute("SELECT lumber FROM resources")
-        lumber = conn.fetchone()
-        conn.execute("SELECT lumber_prod FROM resources")
-        lumber_prod = conn.fetchone()
-
-    def crop_update(update):
-        update.label_crop.setText("Crop: {1} / {2}  / {3}").format(crop, warehouse, crop_prod)
-        conn.execute("SELECT crop FROM resources")
-        crop = conn.fetchone()
-        conn.execute("SELECT crop_prod FROM resources")
-        crop_prod = conn.fetchone()
-
-    def iron_update(update):
-        update.label_iron.setText("Iron: {1} / {2}  / {3}").format(iron, warehouse, iron_prod)
-        conn.execute("SELECT iron FROM resources")
-        iron = conn.fetchone()
-        conn.execute("SELECT iron_prod FROM resources")
-        iron_prod = conn.fetchone()
-
-    def clay_update(update):
-        update.label_clay.setText("Clay: {1} / {2}  / {3}").format(clay, warehouse, clay_prod)
-        conn.execute("SELECT clay FROM resources")
-        clay = conn.fetchone()
-        conn.execute("SELECT clay_prod FROM resources")
-        clay_prod = conn.fetchone()
+    update.lbl_header.setText("Current / Max / Production")
+    update.lbl_lumber.setText("Lumber: {1} / {2} / {3}").format(lumber, warehouse, lumber_prod)
+    update.lbl_clay.setText("Clay: {1} / {2} / {3}").format(clay, warehouse, clay_prod)
+    update.lbl_iron.setText("Iron: {1} / {2} / {3}").format(iron, warehouse, iron_prod)
+    update.lbl_crop.setText("Crop: {1} / {2} / {3}").format(crop, granary, crop_prod)
 
 
 conn = sqlite3.connect('travdate.sqlite')
 cur = conn.cursor()
-Ui_update(update)
-conn.commit()
-
+ui_update(update)
