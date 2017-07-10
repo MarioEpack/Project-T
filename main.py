@@ -10,8 +10,9 @@ from bs4 import BeautifulSoup
 import design 
 from login import Ui_Dialog
 #### Processing modules
-from updates import *
 from gui_update import *
+from scrape import *
+
 
 
 loginDetails = {}
