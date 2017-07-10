@@ -9,14 +9,14 @@ def ui_update(update):
 
     village_id = 1
     cur.execute('''SELECT * FROM resources WHERE village_id=?''', (village_id,))
-    data = conn.fetchone()
+    data = cur.fetchone()
     
     lumber = data[1], clay = data[2], iron = data[3], crop = data[4]
     lumber_prod = data[5], clay_prod = data[6], iron_prod = data[7]
     crop_prod = data[8]
 
     cur.execute('''SELECT * FROM storage WHERE village_id=?''', (village_id))
-    data = conn.fetchone()
+    data = cur.fetchone()
     warehouse = data[1], grannary = data[2]
 
     update.lbl_header.setText("Current / Max / Production")
