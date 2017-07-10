@@ -11,6 +11,7 @@ import design
 from login import Ui_Dialog
 #### Processing modules
 from updates import *
+from gui_update import *
 
 
 loginDetails = {}
@@ -72,6 +73,7 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
         self.start_update_tab1()
         self.btn_update.clicked.connect(self.start_update_tab1)
+        
 
     def start_update_tab1(self):
         self.get_thread = UpdateTab1()
@@ -79,6 +81,7 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.connect(self.get_thread, SIGNAL("finished()"), self.done)
         self.get_thread.start()
         self.btn_update.setEnabled(False)
+        self.btn_update.setText("Updating")
 
     def change_label(self, text):
         self.label.setText(text)
@@ -86,6 +89,8 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def done(self):
         self.btn_update.setEnabled(True)
         QtGui.QMessageBox.information(self, "Done!", "Done fetching data!")
+        ui_update(self)
+
 
 class StartLogin(QtGui.QDialog, Ui_Dialog):
     def __init__(self,parent=None):
