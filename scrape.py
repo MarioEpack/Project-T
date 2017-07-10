@@ -49,24 +49,18 @@ def update_granary(my_soup):
 
 def update_lumber_prod(my_soup):
     soup_lumber_prod = my_soup.find(href="production.php?t=1")
-    lumber_prod = re.findall(r'\d', str(soup_lumber_prod))
-    lumber_prod.remove(lumber_prod[0])
-    lumber = ''.join(lumber_prod)
-    return lumber
-
+    lumber_prod = re.findall(r'\d+', str(soup_lumber_prod))
+    return lumber_prod[1]
+    
 def update_clay_prod(my_soup):
     soup_clay_prod = my_soup.find(href="production.php?t=2")
-    clay_prod = re.findall(r'\d', str(soup_clay_prod))
-    clay_prod.remove(clay_prod[0])
-    clay = ''.join(clay_prod)
-    return clay
+    clay_prod = re.findall(r'\d+', str(soup_clay_prod))
+    return clay_prod[1]
 
 def update_iron_prod(my_soup):
     soup_iron_prod = my_soup.find(href="production.php?t=3")
-    iron_prod = re.findall(r'\d', str(soup_iron_prod))
-    iron_prod.remove(iron_prod[0])
-    iron = ''.join(iron_prod)
-    return iron
+    iron_prod = re.findall(r'\d+', str(soup_iron_prod))
+    return iron_prod[1]
 
 def update_crop_prod(my_soup):
     soup_crop_prod = my_soup.find(href="production.php?t=5")
