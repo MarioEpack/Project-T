@@ -92,7 +92,9 @@ def get_spot_info(session):
         soup = BeautifulSoup(unicodeData, 'html.parser')
         scrape = soup.find(id="build")
         spot = re.findall(r'\d+', str(scrape))
-        triple_tup = (x, spot[0], spot[1])
+        if spot[0] == "0":
+            spot[1] = 0
+        triple_tup = ("1", x, spot[0], spot[1])
         value.append(triple_tup)
 
     return value
@@ -137,7 +139,7 @@ def sqlite_update(session):
     );
 
     CREATE TABLE buildings (
-        village_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        village_id INTEGER NOT NULL,
         id INTEGER NOT NULL,
         gid   INTEGER NOT NULL,
         level   INTEGER NOT NULL
@@ -157,7 +159,7 @@ def sqlite_update(session):
     values_to_insert = get_spot_info(session)
 
     cur.executemany("""
-        INSERT INTO buildings ('id', 'gid', 'level')
-        VALUES (?, ?, ?)""", values_to_insert)
+        INSERT INTO buildings ('village_id','id', 'gid', 'level')
+        VALUES (?, ?, ?, ?)""", values_to_insert)
     
     conn.commit()
