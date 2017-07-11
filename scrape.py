@@ -192,7 +192,7 @@ def sqlite_update(session):
     values_to_insert = create_buildings_list()
 
     cur.executemany("""
-        INSERT INTO spots ('gid', 'name', 'req1', 'req2', 'req3')
+        INSERT INTO buildings ('gid', 'name', 'req1', 'req2', 'req3')
         VALUES (?, ?, ?, ?, ?)""", values_to_insert)
     
     conn.commit()
