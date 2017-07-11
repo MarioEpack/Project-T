@@ -144,6 +144,15 @@ def sqlite_update(session):
         gid   INTEGER NOT NULL,
         level   INTEGER NOT NULL
 
+    )    
+
+    CREATE TABLE IF NOT EXISTS buildings ( 
+        gid INTEGER NOT NULL PRIMARY KEY UNIQUE,
+        name TEXT NOT NULL, 
+        req1 INTEGER NOT NULL, 
+        req2 INTEGER NOT NULL, 
+        req3 INTEGER NOT NULL, 
+        icon_path TEXT NOT NULL
     )
     ''')
 
