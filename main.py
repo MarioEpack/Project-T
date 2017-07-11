@@ -14,7 +14,6 @@ from gui_update import *
 from scrape import *
 
 
-
 loginDetails = {}
 
 class UpdateTab1(QThread):
@@ -52,12 +51,7 @@ class UpdateTab1(QThread):
         return session
 
     def run(self):        
-        session = self.getCookies()
-        r3 = session.get('http://ts2.travian.sk/dorf1.php')
-        unicodeData = r3.text
-        my_soup = BeautifulSoup(unicodeData, 'html.parser')
-
-        sqlite_update(my_soup)
+        sqlite_update(self.getCookies())
         self.emit(SIGNAL('change_label(QString)'), loginDetails["name"])
 
 class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
@@ -65,12 +59,15 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self) 
 
+        global loginDetails
         dlg = StartLogin()  # Open login form before GUI is shown
         if dlg.exec_():     # Load data into global variables
             values = dlg.getValues()
-            global loginDetails
             loginDetails['name'] = values['name']
             loginDetails['password'] = values['password']
+        else:
+            loginDetails['name'] = "Ashreen"
+            loginDetails['password'] = "testing"
 
         self.start_update_tab1()
         self.btn_update.clicked.connect(self.start_update_tab1)
