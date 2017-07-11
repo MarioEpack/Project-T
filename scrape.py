@@ -49,24 +49,18 @@ def update_granary(my_soup):
 
 def update_lumber_prod(my_soup):
     soup_lumber_prod = my_soup.find(href="production.php?t=1")
-    lumber_prod = re.findall(r'\d', str(soup_lumber_prod))
-    lumber_prod.remove(lumber_prod[0])
-    lumber = ''.join(lumber_prod)
-    return lumber
-
+    lumber_prod = re.findall(r'\d+', str(soup_lumber_prod))
+    return lumber_prod[1]
+    
 def update_clay_prod(my_soup):
     soup_clay_prod = my_soup.find(href="production.php?t=2")
-    clay_prod = re.findall(r'\d', str(soup_clay_prod))
-    clay_prod.remove(clay_prod[0])
-    clay = ''.join(clay_prod)
-    return clay
+    clay_prod = re.findall(r'\d+', str(soup_clay_prod))
+    return clay_prod[1]
 
 def update_iron_prod(my_soup):
     soup_iron_prod = my_soup.find(href="production.php?t=3")
-    iron_prod = re.findall(r'\d', str(soup_iron_prod))
-    iron_prod.remove(iron_prod[0])
-    iron = ''.join(iron_prod)
-    return iron
+    iron_prod = re.findall(r'\d+', str(soup_iron_prod))
+    return iron_prod[1]
 
 def update_crop_prod(my_soup):
     soup_crop_prod = my_soup.find(href="production.php?t=5")
@@ -86,11 +80,34 @@ def total_update():
     print update_iron_prod(my_soup)
     print update_crop_prod(my_soup)
 
+#UPDATE BUILDINGS FUNCTIONS
+
+def get_spot_info(session):
+    value = []
+    for x in range(1, 39):
+
+        html = session.get("http://ts2.travian.sk/build.php?id= %d" % (x))
+        unicodeData = html.text
+        unicodeData.encode('ascii', 'ignore')
+        soup = BeautifulSoup(unicodeData, 'html.parser')
+        scrape = soup.find(id="build")
+        spot = re.findall(r'\d+', str(scrape))
+        triple_tup = (x, spot[0], spot[1])
+        value.append(triple_tup)
+
+    return value
+
 
 #SQLITE execute
 
 
-def sqlite_update(my_soup):
+def sqlite_update(session):
+    
+    html = session.get('http://ts2.travian.sk/dorf1.php')
+    unicodeData = html.text
+    unicodeData.encode('ascii', 'ignore')
+    my_soup = BeautifulSoup(unicodeData, 'html.parser')
+
     #SQLITE code
     conn = sqlite3.connect('travdate.sqlite')
     cur = conn.cursor()
@@ -98,6 +115,7 @@ def sqlite_update(my_soup):
     cur.executescript('''
     DROP TABLE IF EXISTS resources;
     DROP TABLE IF EXISTS storage;
+    DROP TABLE IF EXISTS buildings;
 
     CREATE TABLE resources (
         village_id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -116,6 +134,14 @@ def sqlite_update(my_soup):
         warehouse   INTEGER NOT NULL,
         grannary    INTEGER NOT NULL
 
+    );
+
+    CREATE TABLE buildings (
+        village_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        id INTEGER NOT NULL,
+        gid   INTEGER NOT NULL,
+        level   INTEGER NOT NULL
+
     )
     ''')
 
@@ -127,5 +153,11 @@ def sqlite_update(my_soup):
 
     cur.execute('''INSERT INTO storage(warehouse, grannary) VALUES(?, ?)''',
         (update_warehouse(my_soup), update_granary(my_soup)))
+
+    values_to_insert = get_spot_info(session)
+
+    cur.executemany("""
+        INSERT INTO buildings ('id', 'gid', 'level')
+        VALUES (?, ?, ?)""", values_to_insert)
     
     conn.commit()
