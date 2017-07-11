@@ -99,6 +99,24 @@ def get_spot_info(session):
 
     return value
 
+def create_buildings_list():
+    value = []
+    for x in range(1, 41):
+
+        name = ["Woodcutter","Clay Pit","Iron Mine","Cropland","Sawmill",
+                "Brickyard","Iron Foundry","Grain Mill","Bakery","Warehouse",
+                "Granary","Smithy","Tournament Square","Main Building","Rally Point",
+                "Marketplace","Embassy","Barracks","Stable","Workshop",
+                "Academy","Cranny","Town Hall","Residence","Palace",
+                "Treasury","Trade Office","Great Barracks","Great Stable",
+                "City Wall","Earth Wall","Palisade","Stonemason's Lodge","Brewery",
+                "Trapper","Hero's Mansion","Great Warehouse","Great Granary",
+                "Wonder of the World","Horse Drinking Trough"]
+        triple_tup = (x, name, 0, 0, 0)
+        value.append(triple_tup)
+
+    return value
+
 
 #SQLITE execute
 
@@ -117,6 +135,7 @@ def sqlite_update(session):
     cur.executescript('''
     DROP TABLE IF EXISTS resources;
     DROP TABLE IF EXISTS storage;
+    DROP TABLE IF EXISTS spots;
     DROP TABLE IF EXISTS buildings;
 
     CREATE TABLE resources (
@@ -138,21 +157,20 @@ def sqlite_update(session):
 
     );
 
-    CREATE TABLE buildings (
+    CREATE TABLE spots (
         village_id INTEGER NOT NULL,
         id INTEGER NOT NULL,
         gid   INTEGER NOT NULL,
         level   INTEGER NOT NULL
 
-    )    
+    );
 
-    CREATE TABLE IF NOT EXISTS buildings ( 
+    CREATE TABLE buildings ( 
         gid INTEGER NOT NULL PRIMARY KEY UNIQUE,
         name TEXT NOT NULL, 
         req1 INTEGER NOT NULL, 
         req2 INTEGER NOT NULL, 
-        req3 INTEGER NOT NULL, 
-        icon_path TEXT NOT NULL
+        req3 INTEGER NOT NULL
     )
     ''')
 
@@ -168,7 +186,13 @@ def sqlite_update(session):
     values_to_insert = get_spot_info(session)
 
     cur.executemany("""
-        INSERT INTO buildings ('village_id','id', 'gid', 'level')
+        INSERT INTO spots ('village_id','id', 'gid', 'level')
         VALUES (?, ?, ?, ?)""", values_to_insert)
+
+    values_to_insert = create_buildings_list()
+
+    cur.executemany("""
+        INSERT INTO spots ('gid', 'name', 'req1', 'req2', 'req3')
+        VALUES (?, ?, ?, ?, ?)""", values_to_insert)
     
     conn.commit()
