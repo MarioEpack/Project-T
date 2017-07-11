@@ -3,7 +3,6 @@ import sqlite3
 
 def ui_update(update):
 
-
     conn = sqlite3.connect('travdate.sqlite')
     cur = conn.cursor()
 
@@ -29,3 +28,21 @@ def ui_update(update):
     update.lbl_clay.setText(clay_txt)
     update.lbl_iron.setText(iron_txt)
     update.lbl_crop.setText(crop_txt)
+
+
+def buildings_update(update):
+
+    conn = sqlite3.connect('travdate.sqlite')
+    cur = conn.cursor()
+    cur.execute('''SELECT name, level FROM buildings ,spots 
+    WHERE spots.gid=buildings.gid''')
+
+    data = cur.fetchall()
+
+    for building in data:
+        name = building[0].encode('ascii', 'ignore')
+        level = str(building[1])
+        update.lbl_id1.setText(name + " " + level)
+        icon = QtGui.QPixmap(_fromUtf8("images/buildings/g(%s).gif")) % (level)
+        icon = icon.scaled(40, 40, QtCore.Qt.KeepAspectRatio)
+        update.lbl_id1_icon.setPixmap(icon)
