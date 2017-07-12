@@ -101,18 +101,18 @@ def get_spot_info(session):
 
 def create_buildings_list():
     value = []
-    for x in range(1, 41):
+    for x in range(0,42):
 
-        name = ["Woodcutter","Clay Pit","Iron Mine","Cropland","Sawmill",
+        name = ["Empty field","Woodcutter","Clay Pit","Iron Mine","Cropland","Sawmill",
                 "Brickyard","Iron Foundry","Grain Mill","Bakery","Warehouse",
-                "Granary","Smithy","Tournament Square","Main Building","Rally Point",
+                "Granary", "0", "Smithy","Tournament Square","Main Building","Rally Point",
                 "Marketplace","Embassy","Barracks","Stable","Workshop",
                 "Academy","Cranny","Town Hall","Residence","Palace",
                 "Treasury","Trade Office","Great Barracks","Great Stable",
                 "City Wall","Earth Wall","Palisade","Stonemason's Lodge","Brewery",
                 "Trapper","Hero's Mansion","Great Warehouse","Great Granary",
                 "Wonder of the World","Horse Drinking Trough"]
-        triple_tup = (x, name, 0, 0, 0)
+        triple_tup = (x, name[x], 0, 0, 0)
         value.append(triple_tup)
 
     return value
@@ -153,7 +153,7 @@ def sqlite_update(session):
     CREATE TABLE storage (
         village_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         warehouse   INTEGER NOT NULL,
-        grannary    INTEGER NOT NULL
+        granary    INTEGER NOT NULL
 
     );
 
@@ -180,19 +180,20 @@ def sqlite_update(session):
         update_crop_stock(my_soup), update_lumber_prod(my_soup),update_clay_prod(my_soup),
         update_iron_prod(my_soup), update_crop_prod(my_soup)))
 
-    cur.execute('''INSERT INTO storage(warehouse, grannary) VALUES(?, ?)''',
+    cur.execute('''INSERT INTO storage(warehouse, granary) VALUES(?, ?)''',
         (update_warehouse(my_soup), update_granary(my_soup)))
 
     values_to_insert = get_spot_info(session)
 
-    cur.executemany("""
+    cur.executemany('''
         INSERT INTO spots ('village_id','id', 'gid', 'level')
-        VALUES (?, ?, ?, ?)""", values_to_insert)
+        VALUES (?, ?, ?, ?)''', values_to_insert) 
 
     values_to_insert = create_buildings_list()
 
-    cur.executemany("""
+
+    cur.executemany('''
         INSERT INTO buildings ('gid', 'name', 'req1', 'req2', 'req3')
-        VALUES (?, ?, ?, ?, ?)""", values_to_insert)
+        VALUES (?, ?, ?, ?, ?)''', values_to_insert)
     
     conn.commit()
