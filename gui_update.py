@@ -1,45 +1,83 @@
 import sqlite3
-#This file is updating GUI via the sqlite database info
+from PyQt4 import QtCore, QtGui
 
-def Ui_update(update):
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+#This file is updating GUI via the sqlite database
 
-    conn.execute("SELECT warehouse FROM storage")
-    storage = conn.fetchone()
+def ui_update(update):
+    conn = sqlite3.connect('travdate.sqlite')
+    cursor = conn.cursor()
+    village_id = 1
+    cursor.execute('''SELECT lumber, clay, iron, crop, lumber_prod, clay_prod, iron_prod, crop_prod FROM resources WHERE village_id=?''', (village_id,))
+    resources = cursor.fetchone()
+    cursor.execute('''SELECT warehouse, granary  FROM storage WHERE village_id=?''', (village_id,))
+    storage = cursor.fetchone()
 
-    def header_update(update):
-        update.label_header.setText("Current / Max / Production")
-
-    def lumber_update(update):
-        update.label_lumber.setText("Lumber: {1} / {2}  / {3}").format(lumber, warehouse, lumber_prod)
-        conn.execute("SELECT lumber FROM resources")
-        lumber = conn.fetchone()
-        conn.execute("SELECT lumber_prod FROM resources")
-        lumber_prod = conn.fetchone()
-
-    def crop_update(update):
-        update.label_crop.setText("Crop: {1} / {2}  / {3}").format(crop, warehouse, crop_prod)
-        conn.execute("SELECT crop FROM resources")
-        crop = conn.fetchone()
-        conn.execute("SELECT crop_prod FROM resources")
-        crop_prod = conn.fetchone()
-
-    def iron_update(update):
-        update.label_iron.setText("Iron: {1} / {2}  / {3}").format(iron, warehouse, iron_prod)
-        conn.execute("SELECT iron FROM resources")
-        iron = conn.fetchone()
-        conn.execute("SELECT iron_prod FROM resources")
-        iron_prod = conn.fetchone()
-
-    def clay_update(update):
-        update.label_clay.setText("Clay: {1} / {2}  / {3}").format(clay, warehouse, clay_prod)
-        conn.execute("SELECT clay FROM resources")
-        clay = conn.fetchone()
-        conn.execute("SELECT clay_prod FROM resources")
-        clay_prod = conn.fetchone()
+    update.lbl_header.setText("Current / Max / Production")
+    update.lbl_lumber.setText("Lumber: {0} / {1}  / {2}".format(resources[0], storage[0], resources[4]))
+    update.lbl_clay.setText("Clay: {0} / {1}  / {2}".format(resources[1], storage[0], resources[5]))
+    update.lbl_iron.setText("Iron: {0} / {1}  / {2}".format(resources[2], storage[0], resources[6]))
+    update.lbl_crop.setText("Crop: {0} / {1}  / {2}".format(resources[3], storage[1], resources[6]))
 
 
-conn = sqlite3.connect('travdate.sqlite')
-cur = conn.cursor()
-Ui_update(update)
-conn.commit()
+def buildings_update(update):
 
+    conn = sqlite3.connect('travdate.sqlite')
+    cur = conn.cursor()
+    village_id = 1
+    cur.execute('''SELECT gid, name FROM buildings''')
+    data = cur.fetchall()
+
+    buildings_list = []
+
+    for row in data:
+        buildings_list.append(row[1].encode('ascii', 'ignore'))
+    
+    cur.execute('''SELECT id, gid, level FROM spots WHERE village_id=?''', (village_id,))    
+    data = cur.fetchall()
+
+    obj_icon = [update.lbl_id1_icon, update.lbl_id2_icon, update.lbl_id3_icon, 
+                update.lbl_id4_icon, update.lbl_id5_icon, update.lbl_id6_icon,
+                update.lbl_id7_icon, update.lbl_id8_icon, update.lbl_id9_icon, 
+                update.lbl_id10_icon, update.lbl_id11_icon, update.lbl_id12_icon,
+                update.lbl_id13_icon, update.lbl_id14_icon, update.lbl_id15_icon, 
+                update.lbl_id16_icon, update.lbl_id17_icon, update.lbl_id18_icon,
+                update.lbl_id19_icon, update.lbl_id20_icon, update.lbl_id21_icon, 
+                update.lbl_id22_icon, update.lbl_id23_icon, update.lbl_id24_icon,
+                update.lbl_id25_icon, update.lbl_id26_icon, update.lbl_id27_icon, 
+                update.lbl_id28_icon, update.lbl_id29_icon, update.lbl_id30_icon,
+                update.lbl_id31_icon, update.lbl_id32_icon, update.lbl_id33_icon, 
+                update.lbl_id34_icon, update.lbl_id35_icon, update.lbl_id36_icon,
+                update.lbl_id37_icon, update.lbl_id38_icon]
+
+    obj_text = [update.lbl_id1, update.lbl_id2, update.lbl_id3, 
+                update.lbl_id4, update.lbl_id5, update.lbl_id6,
+                update.lbl_id7, update.lbl_id8, update.lbl_id9, 
+                update.lbl_id10, update.lbl_id11, update.lbl_id12,
+                update.lbl_id13, update.lbl_id14, update.lbl_id15, 
+                update.lbl_id16, update.lbl_id17, update.lbl_id18,
+                update.lbl_id19, update.lbl_id20, update.lbl_id21, 
+                update.lbl_id22, update.lbl_id23, update.lbl_id24,
+                update.lbl_id25, update.lbl_id26, update.lbl_id27, 
+                update.lbl_id28, update.lbl_id29, update.lbl_id30,
+                update.lbl_id31, update.lbl_id32, update.lbl_id33, 
+                update.lbl_id34, update.lbl_id35, update.lbl_id36,
+                update.lbl_id37, update.lbl_id38]
+
+    for building in data:
+        if building[1] == 0:
+            name = buildings_list[0]
+            obj_text[building[0]-1].setText(name)
+            icon = QtGui.QPixmap(_fromUtf8("images/buildings/g0.gif"))
+            icon = icon.scaled(40, 40, QtCore.Qt.KeepAspectRatio)
+            obj_icon[building[0]-1].setPixmap(icon)
+        else:
+            name = str(buildings_list[building[1]]) + " " + str(building[2])
+            obj_text[building[0]-1].setText(name)
+            icon = QtGui.QPixmap(_fromUtf8("images/buildings/g{0}.gif".format(building[1])))
+            icon = icon.scaled(40, 40, QtCore.Qt.KeepAspectRatio)
+            obj_icon[building[0]-1].setPixmap(icon)

@@ -51,7 +51,7 @@ class UpdateTab1(QThread):
         return session
 
     def run(self):        
-        sqlite_update(self.getCookies())
+        #sqlite_update(self.getCookies())
         self.emit(SIGNAL('change_label(QString)'), loginDetails["name"])
 
 class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
@@ -88,6 +88,7 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btn_update.setEnabled(True)
         QtGui.QMessageBox.information(self, "Done!", "Done fetching data!")
         ui_update(self)
+        buildings_update(self)
 
 
 class StartLogin(QtGui.QDialog, Ui_Dialog):
