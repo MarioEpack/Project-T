@@ -24,6 +24,24 @@ def ui_update(update):
     update.lbl_iron.setText("Iron: {0} / {1}  / {2}".format(resources[2], storage[0], resources[6]))
     update.lbl_crop.setText("Crop: {0} / {1}  / {2}".format(resources[3], storage[1], resources[6]))
 
+def all_buttons(update):
+    obj_button = [update.btn_id1, update.btn_id2, update.btn_id3, 
+                 update.btn_id4, update.btn_id5, update.btn_id6,
+                 update.btn_id7, update.btn_id8, update.btn_id9, 
+                 update.btn_id10, update.btn_id11, update.btn_id12,
+                 update.btn_id13, update.btn_id14, update.btn_id15, 
+                 update.btn_id16, update.btn_id17, update.btn_id18,
+                 update.btn_id19, update.btn_id20, update.btn_id21, 
+                 update.btn_id22, update.btn_id23, update.btn_id24,
+                 update.btn_id25, update.btn_id26, update.btn_id27, 
+                 update.btn_id28, update.btn_id29, update.btn_id30,
+                 update.btn_id31, update.btn_id32, update.btn_id33, 
+                 update.btn_id34, update.btn_id35, update.btn_id36,
+                 update.btn_id37, update.btn_id38]
+
+    return obj_button
+
+
 def buildings_update(update):
 
     conn = sqlite3.connect('travdate.sqlite')
