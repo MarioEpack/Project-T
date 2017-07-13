@@ -1,5 +1,4 @@
 import sqlite3
-
 from PyQt4 import QtCore, QtGui
 
 try:
@@ -46,7 +45,6 @@ def buildings_update(update):
 
     conn = sqlite3.connect('travdate.sqlite')
     cur = conn.cursor()
-
     village_id = 1
     cur.execute('''SELECT gid, name FROM buildings''')
     data = cur.fetchall()
@@ -87,6 +85,8 @@ def buildings_update(update):
                 update.lbl_id34, update.lbl_id35, update.lbl_id36,
                 update.lbl_id37, update.lbl_id38]
 
+    buttons = all_buttons(update)
+
     for building in data:
         if building[1] == 0:
             name = buildings_list[0]
@@ -100,4 +100,4 @@ def buildings_update(update):
             icon = QtGui.QPixmap(_fromUtf8("images/buildings/g{0}.gif".format(building[1])))
             icon = icon.scaled(40, 40, QtCore.Qt.KeepAspectRatio)
             obj_icon[building[0]-1].setPixmap(icon)
-
+            buttons[building[0]-1].show()
