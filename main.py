@@ -16,7 +16,7 @@ from scrape import *
 
 loginDetails = {}
 
-class UpdateTab1(QThread):
+class Update(QThread):
 
     def __init__(self, myvar, parent=None):
         QThread.__init__(self)
@@ -77,12 +77,12 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
             loginDetails['name'] = "Ashreen"
             loginDetails['password'] = "testing"
 
-        self.start_update_tab1()
-        self.btn_update.clicked.connect(self.start_update_tab1)
+        self.start_update()
+        self.btn_update.clicked.connect(self.start_update)
         
 
-    def start_update_tab1(self):
-        self.get_thread = UpdateTab1(myvar="a")
+    def start_update(self):
+        self.get_thread = Update(myvar="a")
         self.connect(self.get_thread, SIGNAL("change_label(QString)"), self.change_label)
         self.connect(self.get_thread, SIGNAL("finished()"), self.done)
         self.get_thread.start()
@@ -90,12 +90,12 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btn_update.setText("Updating")
 
     def upgrade_building(self, ids):
-        print ids
-        self.get_thread = UpdateTab1(myvar="b")
-        self.connect(self.get_thread, SIGNAL("finished()"), lambda: self.doneUpgrade(ids))
+        buttons = all_buttons(self)
+        self.get_thread = Update(myvar="b")
+        self.connect(self.get_thread, SIGNAL("finished()"), lambda ids=ids: self.doneUpgrade(ids))
         self.get_thread.start()
-        #self.btn_up_id1.setEnabled(False)
-        #button.setText("Adding")
+        buttons[ids].setEnabled(False)
+        buttons[ids].setText("Adding")
 
     def change_label(self, text):
         self.label.setText(text)
@@ -108,17 +108,17 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def hide_buttons_and_connect_all(self):
         buttons = all_buttons(self)
-        i = 0
-        for btn in buttons:
-            #btn.hide()
-            btn.setText(str(i))
-            btn.clicked.connect(lambda: self.upgrade_building(i))
+        helper = lambda i: (lambda: self.upgrade_building(i))
+        for i in range(0,38):
+            buttons[i].hide()
+            buttons[i].setText(str(i))
+            buttons[i].clicked.connect(helper(i))
             i += 1
 
     def doneUpgrade(self, ids):
         buttons = all_buttons(self)
         buttons[ids].setText("cas")
-        QtGui.QMessageBox.information(self, "Upgrade building", "Upgrade for building was added to queue!")
+        QtGui.QMessageBox.information(self, "Upgrade building", "Upgrade for building {0} was added to queue!".format(ids))
 
 
 class StartLogin(QtGui.QDialog, Ui_Dialog):
