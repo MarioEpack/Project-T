@@ -501,6 +501,14 @@ class Ui_MainWindow(object):
         self.btn_id38 = QtGui.QPushButton(self.tab_2)
         self.btn_id38.setGeometry(QtCore.QRect(900, 520, 60, 20))
         self.btn_id38.setObjectName(_fromUtf8("btn_id38"))
+        self.lcd_time_left = QtGui.QLCDNumber(self.tab_2)
+        self.lcd_time_left.setGeometry(QtCore.QRect(160, 470, 161, 23))
+        self.lcd_time_left.setDigitCount(8)
+        self.lcd_time_left.setProperty("intValue", 1000)
+        self.lcd_time_left.setObjectName(_fromUtf8("lcd_time_left"))
+        self.budova = QtGui.QLabel(self.tab_2)
+        self.budova.setGeometry(QtCore.QRect(80, 520, 411, 16))
+        self.budova.setObjectName(_fromUtf8("budova"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -563,6 +571,7 @@ class Ui_MainWindow(object):
         self.btn_id30.setText(_translate("MainWindow", "Upgrade", None))
         self.btn_id37.setText(_translate("MainWindow", "Upgrade", None))
         self.btn_id38.setText(_translate("MainWindow", "Upgrade", None))
+        self.budova.setText(_translate("MainWindow", "TextLabel", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2", None))
 
 

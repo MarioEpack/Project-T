@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 import sqlite3
+import requests
 
 #Scraping the updates
 #UPDATE STORAGE FUNCTIONS
@@ -191,9 +192,79 @@ def sqlite_update(session):
 
     values_to_insert = create_buildings_list()
 
-
     cur.executemany('''
         INSERT INTO buildings ('gid', 'name', 'req1', 'req2', 'req3')
         VALUES (?, ?, ?, ?, ?)''', values_to_insert)
     
     conn.commit()
+
+def upgrade_link(session, building_id):
+
+    html = session.get("http://ts2.travian.sk/build.php?id=%d" % (building_id))
+    unicodeData = html.text
+    soup = BeautifulSoup(unicodeData, 'html.parser')
+
+    my_re = re.findall(r'dorf..php\?a=...............', str(soup))
+    re_str = my_re[0]
+    re_list = list(re_str)
+    re_list.pop(15)
+    re_list.pop(15)
+    re_list.pop(15)
+    re_list.pop(15)
+    re_str = "".join(re_list)
+    return re_str
+
+def is_building(village_id=1):
+    # This function inserts build_info into sqlite, or returns False
+   
+    try:
+        #SQLITE code
+        conn = sqlite3.connect('travdate.sqlite')
+        cur = conn.cursor()
+        #request and soup
+        r1 = requests.get('http://ts2.travian.sk/login.php')
+        unicodeData = r1.text
+        unicodeData.encode('ascii', 'ignore')
+        soup = BeautifulSoup(unicodeData, 'html.parser')
+        tags = soup('input')
+        value_list = []
+
+        for tag in tags:
+            value_list.append(tag.get('value', None))
+
+        my_id = value_list[4]
+
+        payload = {'login': my_id, 
+                   'name': "Ashreen", 
+                   'password': "testing", 
+                   's1': 'Login', 
+                   'w': '1920:1080'}
+
+
+        session = requests.Session()
+
+        session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
+        req = session.get('http://ts2.travian.sk/dorf2.php')
+        unicodeData = req.text
+        unicodeData.encode('ascii', 'ignore')
+        soup = BeautifulSoup(unicodeData, 'html.parser')
+        #Time left in seconds
+        time_left = soup.find("div", {"class" : "buildDuration"})
+        time_left = list(time_left)[1]
+        time_left = re.findall(r"\d+", str(time_left))
+        time_left = time_left[0]
+        #level, gid, aid
+        level_info = re.findall(r"\"stufe\":..", str(soup))[0]
+        level_info = re.findall(r"\d+", level_info)[0]
+        gid_info = re.findall(r"\"gid\":\"..\"", str(soup))[0]
+        gid_info = re.findall(r"\d+", gid_info)[0]
+        aid_info = re.findall(r"\"aid\":\"..\"", str(soup))[0]
+        aid_info = re.findall(r"\d+", aid_info)[0]
+        #SQL execute
+        cur.execute('''INSERT INTO build_queue(village_id, gid, aid, level, active, timer)
+       VALUES(?, ?, ?, ?, ?, ?)''',
+        (village_id, gid_info, aid_info, level_info, "1", time_left))
+        conn.commit()
+        return True
+    except TypeError:
+        return False

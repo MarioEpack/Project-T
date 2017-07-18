@@ -5,6 +5,7 @@ import requests
 import re
 from pathlib import Path
 from bs4 import BeautifulSoup
+from time import strftime
 
 #### GUI modules
 import design 
@@ -21,6 +22,7 @@ class Update(QThread):
     def __init__(self, myvar, parent=None):
         QThread.__init__(self)
         self.myvar = myvar
+
 
     def __del__(self):
         self.wait()
@@ -49,7 +51,7 @@ class Update(QThread):
         session = requests.Session()
 
         session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
-        return session
+        return session       
 
     def run(self): 
         if self.myvar == 'a':
@@ -59,12 +61,17 @@ class Update(QThread):
             """session = self.getCookies()
             link = upgrade_link(session, 21)
             session.get('http://ts2.travian.sk/{0}'.format(link))
-            self.emit(SIGNAL('change_label(QString)'), loginDetails["name"]) """    
+            self.emit(SIGNAL('change_label(QString)'), loginDetails["name"]) """  
+        
+            
 
 class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self) 
+        self.time_left = 0
+        self.ctimer = QtCore.QTimer()
+        self.stimer = QtCore.QTimer()
 
         self.hide_buttons_and_connect_all()
         global loginDetails
@@ -77,8 +84,9 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
             loginDetails['name'] = "Ashreen"
             loginDetails['password'] = "testing"
 
-        self.start_update()
-        self.btn_update.clicked.connect(self.start_update)
+        #self.start_update() 
+        self.start_build_queue()
+        #self.btn_update.clicked.connect(self.start_update)
         
 
     def start_update(self):
@@ -97,8 +105,35 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         buttons[ids].setEnabled(False)
         buttons[ids].setText("Adding")
 
+    def start_build_queue(self):
+
+        if is_building() == True:
+            conn = sqlite3.connect('travdate.sqlite')
+            cursor = conn.cursor()
+            village_id = 1
+            cursor.execute('''SELECT id, gid, aid, level, timer FROM build_queue WHERE village_id=? and active = 1''', (village_id,))
+            data = cursor.fetchone()
+            times = (data[4]*1000)+2000
+
+            cursor.execute('''SELECT name FROM buildings WHERE gid=?''', (data[1],))    
+            data2 = cursor.fetchone()
+            self.budova.setText(str(data2[0]) + " is being upgraded to level " + str(data[3]) + ".")
+
+            self.ctimer.timeout.connect(self.change_timer)
+            self.ctimer.start(1000) 
+            self.stimer.singleShot(times, self.next_building)
+            self.time_left = data[4]
+
     def change_label(self, text):
         self.label.setText(text)
+
+    def change_timer(self):
+        self.lcd_time_left.display(self.time_left)
+        self.time_left -= 1
+
+    def next_building(self):
+        self.ctimer.stop() 
+        QtGui.QMessageBox.information(self, "Done!", "Done fetching data!")
 
     def done(self):
         self.btn_update.setEnabled(True)
