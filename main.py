@@ -84,9 +84,10 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
             loginDetails['name'] = "Ashreen"
             loginDetails['password'] = "testing"
 
-        #self.start_update() 
+        self.start_update() 
         self.start_build_queue()
         #self.btn_update.clicked.connect(self.start_update)
+        self.pushButton.clicked.connect(self.next_building)
         
 
     def start_update(self):
@@ -97,20 +98,50 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btn_update.setEnabled(False)
         self.btn_update.setText("Updating")
 
-    def upgrade_building(self, ids):
+    def add_building(self, ids):
         buttons = all_buttons(self)
-        self.get_thread = Update(myvar="b")
-        self.connect(self.get_thread, SIGNAL("finished()"), lambda ids=ids: self.doneUpgrade(ids))
-        self.get_thread.start()
         buttons[ids].setEnabled(False)
         buttons[ids].setText("Adding")
+        btn_id = str(buttons[ids].objectName())
+        btn_id = btn_id[6:]
+
+        conn = sqlite3.connect('travdate.sqlite')
+        cur = conn.cursor()
+        cur.execute('''SELECT gid, level FROM spots WHERE village_id=? AND id=?''', ("1", btn_id))
+        data = cur.fetchone()
+
+        cur.execute('''SELECT gid, name FROM buildings''')
+        data2 = cur.fetchall()
+
+        buildings_list = []
+        datai = data[1]+1
+
+        for row in data2:
+            buildings_list.append(row[1].encode('ascii', 'ignore'))
+
+        cur.execute('''INSERT INTO build_queue(village_id, gid, aid, level, active, timer)
+        VALUES(?, ?, ?, ?, ?, ?)''',
+        (1, data[0], btn_id, str(datai), 0, 0))
+        conn.commit()
+
+        self.listWidget.addItem(buildings_list[data[0]] + " to level " + str(datai))
+
 
     def start_build_queue(self):
+        conn = sqlite3.connect('travdate.sqlite')
+        cursor = conn.cursor()
+        village_id = 1
+
+        cursor.execute('''SELECT gid, name FROM buildings''')
+        data2 = cursor.fetchall()
+
+        buildings_list = []
+
+        for row in data2:
+            buildings_list.append(row[1].encode('ascii', 'ignore'))
 
         if is_building() == True:
-            conn = sqlite3.connect('travdate.sqlite')
-            cursor = conn.cursor()
-            village_id = 1
+            
             cursor.execute('''SELECT id, gid, aid, level, timer FROM build_queue WHERE village_id=? and active = 1''', (village_id,))
             data = cursor.fetchone()
             times = (data[4]*1000)+2000
@@ -124,6 +155,12 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.stimer.singleShot(times, self.next_building)
             self.time_left = data[4]
 
+        cursor.execute('''SELECT gid, level FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
+        data = cursor.fetchall()
+
+        for row in data:
+            self.listWidget.addItem(buildings_list[row[0]] + " to level " + str(row[1]))
+
     def change_label(self, text):
         self.label.setText(text)
 
@@ -132,8 +169,67 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.time_left -= 1
 
     def next_building(self):
-        self.ctimer.stop() 
-        QtGui.QMessageBox.information(self, "Done!", "Done fetching data!")
+        self.ctimer.stop()
+        conn = sqlite3.connect('travdate.sqlite')
+        cursor = conn.cursor()
+        village_id = 1
+
+        cursor.execute('''DELETE FROM build_queue WHERE village_id=? and active = 1''', (village_id,))
+        conn.commit()
+        cursor.execute('''SELECT gid, level, id, aid FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
+        data = cursor.fetchone()
+        r1 = requests.get('http://ts2.travian.sk/login.php')
+        unicodeData = r1.text
+        unicodeData.encode('ascii', 'ignore')
+        soup = BeautifulSoup(unicodeData, 'html.parser')
+        tags = soup('input')
+        value_list = []
+
+        for tag in tags:
+            value_list.append(tag.get('value', None))
+
+        my_id = value_list[4]
+
+        payload = {'login': my_id, 
+                   'name': "Ashreen", 
+                   'password': "testing", 
+                   's1': 'Login', 
+                   'w': '1920:1080'}
+
+        session = requests.Session()
+
+        session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
+        link = upgrade_link(session, data[3])
+        session.get('http://ts2.travian.sk/{0}'.format(link))
+
+        cursor.execute('''SELECT gid, name FROM buildings''')
+        data2 = cursor.fetchall()
+
+        buildings_list = []
+
+        for row in data2:
+            buildings_list.append(row[1].encode('ascii', 'ignore'))
+
+        req = session.get('http://ts2.travian.sk/dorf2.php')
+
+        unicodeData = req.text
+        unicodeData.encode('ascii', 'ignore')
+        soup = BeautifulSoup(unicodeData, 'html.parser')
+        #Time left in seconds
+        time_left = soup.find("div", {"class" : "buildDuration"})
+        time_left = list(time_left)[1]
+        time_left = re.findall(r"\d+", str(time_left))
+        time_left = time_left[0]
+        times = (int(time_left)*1000)+2000
+
+        self.ctimer.timeout.connect(self.change_timer)
+        self.ctimer.start(1000) 
+        self.stimer.singleShot(times, self.next_building)
+        self.time_left = int(time_left)
+        self.budova.setText(str(data[0]) + " is being upgraded to level " + str(data[1]) + ".")
+
+        cursor.execute("UPDATE build_queue SET active = 1, timer = ? WHERE id = ?", (int(time_left),data[2]))
+        conn.commit()
 
     def done(self):
         self.btn_update.setEnabled(True)
@@ -143,10 +239,9 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def hide_buttons_and_connect_all(self):
         buttons = all_buttons(self)
-        helper = lambda i: (lambda: self.upgrade_building(i))
+        helper = lambda i: (lambda: self.add_building(i))
         for i in range(0,38):
             buttons[i].hide()
-            buttons[i].setText(str(i))
             buttons[i].clicked.connect(helper(i))
             i += 1
 

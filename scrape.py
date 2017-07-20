@@ -245,6 +245,7 @@ def is_building(village_id=1):
 
         session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
         req = session.get('http://ts2.travian.sk/dorf2.php')
+
         unicodeData = req.text
         unicodeData.encode('ascii', 'ignore')
         soup = BeautifulSoup(unicodeData, 'html.parser')
@@ -256,15 +257,32 @@ def is_building(village_id=1):
         #level, gid, aid
         level_info = re.findall(r"\"stufe\":..", str(soup))[0]
         level_info = re.findall(r"\d+", level_info)[0]
-        gid_info = re.findall(r"\"gid\":\"..\"", str(soup))[0]
+        gid_info = re.findall(r"\"gid\":\"....", str(soup))[0]
         gid_info = re.findall(r"\d+", gid_info)[0]
-        aid_info = re.findall(r"\"aid\":\"..\"", str(soup))[0]
+        aid_info = re.findall(r"\"aid\":\"....", str(soup))[0]
         aid_info = re.findall(r"\d+", aid_info)[0]
         #SQL execute
+        cur.executescript('''
+        DROP TABLE IF EXISTS build_queue;
+
+        CREATE TABLE build_queue (
+        id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        village_id INTEGER NOT NULL,
+        gid   INTEGER NOT NULL,
+        aid    INTEGER NOT NULL,
+        level  INTEGER NOT NULL,
+        active INTEGER NOT NULL,
+        timer INTEGER NOT NULL
+        )
+        ''')
+
         cur.execute('''INSERT INTO build_queue(village_id, gid, aid, level, active, timer)
-       VALUES(?, ?, ?, ?, ?, ?)''',
+        VALUES(?, ?, ?, ?, ?, ?)''',
         (village_id, gid_info, aid_info, level_info, "1", time_left))
         conn.commit()
         return True
-    except TypeError:
+    except TypeError:    
         return False
+
+
+
