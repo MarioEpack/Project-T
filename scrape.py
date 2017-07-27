@@ -68,26 +68,13 @@ def update_crop_prod(my_soup):
     crop_prod = re.findall(r'\d+', str(soup_crop_prod))
     return crop_prod[3]
 
-def total_update():
-    print update_lumber_stock(my_soup)
-    print update_crop_stock(my_soup)
-    print update_iron_stock(my_soup)
-    print update_clay_stock(my_soup)
-    print update_warehouse(my_soup)
-    print update_granary(my_soup)
-
-    print update_lumber_prod(my_soup)
-    print update_clay_prod(my_soup)
-    print update_iron_prod(my_soup)
-    print update_crop_prod(my_soup)
-
 #UPDATE BUILDINGS FUNCTIONS
 
-def get_spot_info(session):
+def get_spot_info(session, server):
     value = []
     for x in range(1, 39):
 
-        html = session.get("http://ts2.travian.sk/build.php?id= %d" % (x))
+        html = session.get("http://{0}/build.php?id={1}".format(server, x))
         unicodeData = html.text
         unicodeData.encode('ascii', 'ignore')
         soup = BeautifulSoup(unicodeData, 'html.parser')
@@ -118,13 +105,23 @@ def create_buildings_list():
 
     return value
 
+def buildings():
+    conn = sqlite3.connect('travdate.sqlite')
+    cursor = conn.cursor()
+    cursor.execute('''SELECT gid, name FROM buildings''')
+    data2 = cursor.fetchall()
+
+    buildings_list = []
+
+    for row in data2:
+        buildings_list.append(row[1].encode('ascii', 'ignore'))
+
+    return buildings_list
 
 #SQLITE execute
-
-
-def sqlite_update(session):
+def sqlite_update(session, server):
     
-    html = session.get('http://ts2.travian.sk/dorf1.php')
+    html = session.get('http://{0}/dorf1.php'.format(server))
     unicodeData = html.text
     unicodeData.encode('ascii', 'ignore')
     my_soup = BeautifulSoup(unicodeData, 'html.parser')
@@ -172,7 +169,17 @@ def sqlite_update(session):
         req1 INTEGER NOT NULL, 
         req2 INTEGER NOT NULL, 
         req3 INTEGER NOT NULL
-    )
+    );
+
+    CREATE TABLE IF NOT EXISTS build_queue (
+        id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        village_id INTEGER NOT NULL,
+        gid   INTEGER NOT NULL,
+        aid    INTEGER NOT NULL,
+        level  INTEGER NOT NULL,
+        active INTEGER NOT NULL,
+        timer INTEGER NOT NULL
+        )
     ''')
 
     cur.execute('''INSERT INTO resources(lumber, clay, iron, crop, lumber_prod,
@@ -184,7 +191,7 @@ def sqlite_update(session):
     cur.execute('''INSERT INTO storage(warehouse, granary) VALUES(?, ?)''',
         (update_warehouse(my_soup), update_granary(my_soup)))
 
-    values_to_insert = get_spot_info(session)
+    values_to_insert = get_spot_info(session, server)
 
     cur.executemany('''
         INSERT INTO spots ('village_id','id', 'gid', 'level')
@@ -198,9 +205,9 @@ def sqlite_update(session):
     
     conn.commit()
 
-def upgrade_link(session, building_id):
+def upgrade_link(session, server, building_id):
 
-    html = session.get("http://ts2.travian.sk/build.php?id=%d" % (building_id))
+    html = session.get("http://{0}/build.php?id={1}".format(server, building_id))
     unicodeData = html.text
     soup = BeautifulSoup(unicodeData, 'html.parser')
 
@@ -214,38 +221,14 @@ def upgrade_link(session, building_id):
     re_str = "".join(re_list)
     return re_str
 
-def is_building(village_id=1):
+def is_building(village_id, session, server):
     # This function inserts build_info into sqlite, or returns False
-   
     try:
         #SQLITE code
         conn = sqlite3.connect('travdate.sqlite')
         cur = conn.cursor()
         #request and soup
-        r1 = requests.get('http://ts2.travian.sk/login.php')
-        unicodeData = r1.text
-        unicodeData.encode('ascii', 'ignore')
-        soup = BeautifulSoup(unicodeData, 'html.parser')
-        tags = soup('input')
-        value_list = []
-
-        for tag in tags:
-            value_list.append(tag.get('value', None))
-
-        my_id = value_list[4]
-
-        payload = {'login': my_id, 
-                   'name': "Ashreen", 
-                   'password': "testing", 
-                   's1': 'Login', 
-                   'w': '1920:1080'}
-
-
-        session = requests.Session()
-
-        session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
-        req = session.get('http://ts2.travian.sk/dorf2.php')
-
+        req = session.get('http://{0}/dorf2.php'.format(server))
         unicodeData = req.text
         unicodeData.encode('ascii', 'ignore')
         soup = BeautifulSoup(unicodeData, 'html.parser')
@@ -262,20 +245,6 @@ def is_building(village_id=1):
         aid_info = re.findall(r"\"aid\":\"....", str(soup))[0]
         aid_info = re.findall(r"\d+", aid_info)[0]
         #SQL execute
-        cur.executescript('''
-        DROP TABLE IF EXISTS build_queue;
-
-        CREATE TABLE build_queue (
-        id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        village_id INTEGER NOT NULL,
-        gid   INTEGER NOT NULL,
-        aid    INTEGER NOT NULL,
-        level  INTEGER NOT NULL,
-        active INTEGER NOT NULL,
-        timer INTEGER NOT NULL
-        )
-        ''')
-
         cur.execute('''INSERT INTO build_queue(village_id, gid, aid, level, active, timer)
         VALUES(?, ?, ?, ?, ?, ?)''',
         (village_id, gid_info, aid_info, level_info, "1", time_left))
@@ -283,6 +252,3 @@ def is_building(village_id=1):
         return True
     except TypeError:    
         return False
-
-
-
