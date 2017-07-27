@@ -6,16 +6,15 @@ import re
 from pathlib import Path
 from bs4 import BeautifulSoup
 from time import strftime
-
 #### GUI modules
 import design 
-from login import Ui_Dialog
 #### Processing modules
 from gui_update import *
 from scrape import *
+from login import *
 
-
-loginDetails = {}
+sessionGlobal = requests.Session()
+serverGlobal = ""
 
 class Update(QThread):
 
@@ -23,72 +22,38 @@ class Update(QThread):
         QThread.__init__(self)
         self.myvar = myvar
 
-
     def __del__(self):
-        self.wait()
-
-    def getCookies(self):
-        global loginDetails
-        r1 = requests.get('http://ts2.travian.sk/login.php')
-        unicodeData = r1.text
-        unicodeData.encode('ascii', 'ignore')
-        soup = BeautifulSoup(unicodeData, 'html.parser')
-        tags = soup('input')
-        value_list = []
-
-        for tag in tags:
-            value_list.append(tag.get('value', None))
-
-        my_id = value_list[4]
-
-        payload = {'login': my_id, 
-                   'name': str(loginDetails["name"]), 
-                   'password': str(loginDetails["password"]), 
-                   's1': 'Login', 
-                   'w': '1920:1080'}
-
-
-        session = requests.Session()
-
-        session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
-        return session       
+        self.wait()      
 
     def run(self): 
         if self.myvar == 'a':
-            #sqlite_update(self.getCookies())
-            self.emit(SIGNAL('change_label(QString)'), loginDetails["name"])
+            sqlite_update(sessionGlobal, serverGlobal)
         elif self.myvar == 'b':
             """session = self.getCookies()
             link = upgrade_link(session, 21)
             session.get('http://ts2.travian.sk/{0}'.format(link))
-            self.emit(SIGNAL('change_label(QString)'), loginDetails["name"]) """  
-        
-            
+            self.emit(SIGNAL('change_label(QString)'), loginDetails["name"]) """         
 
 class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
-        self.setupUi(self) 
+        self.setupUi(self)
+        #Open login form 
+        #Get session if login succeeded or terminate app if form was closed
+        global serverGlobal, sessionGlobal
+        sessionGlobal = loginForm()
+        serverGlobal = server_file(1)
+        #Set timer variables
         self.time_left = 0
         self.ctimer = QtCore.QTimer()
         self.stimer = QtCore.QTimer()
-
+        #Run initial functions
         self.hide_buttons_and_connect_all()
-        global loginDetails
-        dlg = StartLogin()  # Open login form before GUI is shown
-        if dlg.exec_():     # Load data into global variables
-            values = dlg.getValues()
-            loginDetails['name'] = values['name']
-            loginDetails['password'] = values['password']
-        else:
-            loginDetails['name'] = "Ashreen"
-            loginDetails['password'] = "testing"
-
         self.start_update() 
         self.start_build_queue()
-        #self.btn_update.clicked.connect(self.start_update)
+        #Add connects
+        self.btn_update.clicked.connect(self.start_update)
         self.pushButton.clicked.connect(self.next_building)
-        
 
     def start_update(self):
         self.get_thread = Update(myvar="a")
@@ -110,14 +75,8 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         cur.execute('''SELECT gid, level FROM spots WHERE village_id=? AND id=?''', ("1", btn_id))
         data = cur.fetchone()
 
-        cur.execute('''SELECT gid, name FROM buildings''')
-        data2 = cur.fetchall()
-
-        buildings_list = []
+        buildings_list = buildings()
         datai = data[1]+1
-
-        for row in data2:
-            buildings_list.append(row[1].encode('ascii', 'ignore'))
 
         cur.execute('''INSERT INTO build_queue(village_id, gid, aid, level, active, timer)
         VALUES(?, ?, ?, ?, ?, ?)''',
@@ -126,21 +85,13 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
         self.listWidget.addItem(buildings_list[data[0]] + " to level " + str(datai))
 
-
     def start_build_queue(self):
         conn = sqlite3.connect('travdate.sqlite')
         cursor = conn.cursor()
         village_id = 1
+        buildings_list = buildings()
 
-        cursor.execute('''SELECT gid, name FROM buildings''')
-        data2 = cursor.fetchall()
-
-        buildings_list = []
-
-        for row in data2:
-            buildings_list.append(row[1].encode('ascii', 'ignore'))
-
-        if is_building() == True:
+        if is_building(village_id, sessionGlobal, serverGlobal) == True:
             
             cursor.execute('''SELECT id, gid, aid, level, timer FROM build_queue WHERE village_id=? and active = 1''', (village_id,))
             data = cursor.fetchone()
@@ -155,11 +106,61 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.stimer.singleShot(times, self.next_building)
             self.time_left = data[4]
 
-        cursor.execute('''SELECT gid, level FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
-        data = cursor.fetchall()
+            cursor.execute('''SELECT exists(SELECT 1 FROM build_queue WHERE village_id = 1 and active = 0);''')
 
-        for row in data:
-            self.listWidget.addItem(buildings_list[row[0]] + " to level " + str(row[1]))
+            if data[0] == 1:
+                cursor.execute('''SELECT gid, level FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
+                data = cursor.fetchall()
+
+                for row in data:
+                    self.listWidget.addItem(buildings_list[row[0]] + " to level " + str(row[1]))
+            else:
+                self.listWidget.addItem("Build queue is empty!")
+        else:
+            cursor.execute('''DELETE FROM build_queue WHERE village_id=? and active = 1''', (village_id,))
+            conn.commit()
+
+            cursor.execute('''SELECT exists(SELECT 1 FROM build_queue WHERE village_id = 1 and active = 0);''')
+            data = cursor.fetchone()
+
+            if data[0] == 1:
+                cursor.execute('''SELECT gid, level, id, aid FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
+                data = cursor.fetchone()
+                link = upgrade_link(sessionGlobal, serverGlobal, data[3])
+                session.get('http://{1}/{0}'.format(link, serverGlobal))
+
+                unicodeData = req.text
+                unicodeData.encode('ascii', 'ignore')
+                soup = BeautifulSoup(unicodeData, 'html.parser')
+                #Time left in seconds
+                time_left = soup.find("div", {"class" : "buildDuration"})
+                time_left = list(time_left)[1]
+                time_left = re.findall(r"\d+", str(time_left))
+                time_left = time_left[0]
+                times = (int(time_left)*1000)+2000
+
+                self.ctimer.timeout.connect(self.change_timer)
+                self.ctimer.start(1000) 
+                self.stimer.singleShot(times, self.next_building)
+                self.time_left = int(time_left)
+                self.budova.setText(str(data[0]) + " is being upgraded to level " + str(data[1]) + ".")
+
+                cursor.execute("UPDATE build_queue SET active = 1, timer = ? WHERE id = ?", (int(time_left),data[2]))
+                conn.commit()
+
+                cursor.execute('''SELECT exists(SELECT 1 FROM build_queue WHERE village_id = 1 and active = 0);''')
+                data = cursor.fetchone()
+
+                if data[0] == 0:
+                    self.listWidget.addItem("Build queue is empty!")
+                else:
+                    cursor.execute('''SELECT gid, level FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
+                    data = cursor.fetchall()
+
+                    for row in data:
+                        self.listWidget.addItem(buildings_list[row[0]] + " to level " + str(row[1]))
+            else:
+                self.listWidget.addItem("Build queue is empty!")
 
     def change_label(self, text):
         self.label.setText(text)
@@ -178,39 +179,12 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         conn.commit()
         cursor.execute('''SELECT gid, level, id, aid FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
         data = cursor.fetchone()
-        r1 = requests.get('http://ts2.travian.sk/login.php')
-        unicodeData = r1.text
-        unicodeData.encode('ascii', 'ignore')
-        soup = BeautifulSoup(unicodeData, 'html.parser')
-        tags = soup('input')
-        value_list = []
+        link = upgrade_link(sessionGlobal, serverGlobal, data[3])
+        session.get('http://{1}/{0}'.format(link, serverGlobal))
 
-        for tag in tags:
-            value_list.append(tag.get('value', None))
+        buildings_list = buildings()
 
-        my_id = value_list[4]
-
-        payload = {'login': my_id, 
-                   'name': "Ashreen", 
-                   'password': "testing", 
-                   's1': 'Login', 
-                   'w': '1920:1080'}
-
-        session = requests.Session()
-
-        session.post('http://ts2.travian.sk/dorf1.php', data=payload, cookies=r1.cookies)
-        link = upgrade_link(session, data[3])
-        session.get('http://ts2.travian.sk/{0}'.format(link))
-
-        cursor.execute('''SELECT gid, name FROM buildings''')
-        data2 = cursor.fetchall()
-
-        buildings_list = []
-
-        for row in data2:
-            buildings_list.append(row[1].encode('ascii', 'ignore'))
-
-        req = session.get('http://ts2.travian.sk/dorf2.php')
+        req = session.get('http://{0}/dorf2.php'.format(serverGlobal))
 
         unicodeData = req.text
         unicodeData.encode('ascii', 'ignore')
@@ -230,6 +204,14 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
         cursor.execute("UPDATE build_queue SET active = 1, timer = ? WHERE id = ?", (int(time_left),data[2]))
         conn.commit()
+
+        cursor.execute('''SELECT gid, level FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
+        data = cursor.fetchall()
+
+        self.listWidget.clear()
+
+        for row in data:
+            self.listWidget.addItem(buildings_list[row[0]] + " to level " + str(row[1]))
 
     def done(self):
         self.btn_update.setEnabled(True)
@@ -251,20 +233,11 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         QtGui.QMessageBox.information(self, "Upgrade building", "Upgrade for building {0} was added to queue!".format(ids))
 
 
-class StartLogin(QtGui.QDialog, Ui_Dialog):
-    def __init__(self,parent=None):
-        QtGui.QDialog.__init__(self,parent)
-        self.setupUi(self)
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
-    def getValues(self): # Get values from login form
-        return {'server': self.comboBox.currentText(), 
-                'name': self.lineEdit.text(), 
-                'password': self.lineEdit_2.text()}
 
 def main():
     app = QtGui.QApplication(sys.argv)  # A new instance of QApplication
-    form = MainApp()                    # We set the form to be our ExampleApp (design)
+    form = MainApp()                    # Set the form
     form.show()                         # Show the form
     app.exec_()                         # and execute the app
 
