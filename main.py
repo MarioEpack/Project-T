@@ -27,7 +27,8 @@ class Update(QThread):
 
     def run(self): 
         if self.myvar == 'a':
-            sqlite_update(sessionGlobal, serverGlobal)
+            #sqlite_update(sessionGlobal, serverGlobal)
+            map_scan(-51, -29, 3, sessionGlobal, serverGlobal)
         elif self.myvar == 'b':
             """session = self.getCookies()
             link = upgrade_link(session, 21)
@@ -48,9 +49,9 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.ctimer = QtCore.QTimer()
         self.stimer = QtCore.QTimer()
         #Run initial functions
-        self.hide_buttons_and_connect_all()
+        #self.hide_buttons_and_connect_all()
         self.start_update() 
-        self.start_build_queue()
+        #self.start_build_queue()
         #Add connects
         self.btn_update.clicked.connect(self.start_update)
         self.pushButton.clicked.connect(self.next_building)

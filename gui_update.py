@@ -101,3 +101,5 @@ def buildings_update(update):
             icon = icon.scaled(40, 40, QtCore.Qt.KeepAspectRatio)
             obj_icon[building[0]-1].setPixmap(icon)
             buttons[building[0]-1].show()
+
+
