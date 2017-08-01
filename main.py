@@ -27,8 +27,8 @@ class Update(QThread):
 
     def run(self): 
         if self.myvar == 'a':
-            #sqlite_update(sessionGlobal, serverGlobal)
-            map_scan(-51, -29, 3, sessionGlobal, serverGlobal)
+            sqlite_update(sessionGlobal, serverGlobal)
+            #map_scan(-51, -29, 3, sessionGlobal, serverGlobal)
         elif self.myvar == 'b':
             """session = self.getCookies()
             link = upgrade_link(session, 21)
@@ -49,9 +49,8 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.ctimer = QtCore.QTimer()
         self.stimer = QtCore.QTimer()
         #Run initial functions
-        #self.hide_buttons_and_connect_all()
+        self.hide_buttons_and_connect_all()
         self.start_update() 
-        #self.start_build_queue()
         #Add connects
         self.btn_update.clicked.connect(self.start_update)
         self.pushButton.clicked.connect(self.next_building)
@@ -100,6 +99,8 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
             cursor.execute('''SELECT name FROM buildings WHERE gid=?''', (data[1],))    
             data2 = cursor.fetchone()
+            print data
+            print data2
             self.budova.setText(str(data2[0]) + " is being upgraded to level " + str(data[3]) + ".")
 
             self.ctimer.timeout.connect(self.change_timer)
@@ -128,7 +129,7 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 cursor.execute('''SELECT gid, level, id, aid FROM build_queue WHERE village_id=? and active = 0''', (village_id,))
                 data = cursor.fetchone()
                 link = upgrade_link(sessionGlobal, serverGlobal, data[3])
-                session.get('http://{1}/{0}'.format(link, serverGlobal))
+                req = session.get('http://{1}/{0}'.format(link, serverGlobal))
 
                 unicodeData = req.text
                 unicodeData.encode('ascii', 'ignore')
@@ -219,6 +220,7 @@ class MainApp(QtGui.QMainWindow, design.Ui_MainWindow):
         QtGui.QMessageBox.information(self, "Done!", "Done fetching data!")
         ui_update(self)
         buildings_update(self)
+        self.start_build_queue()
 
     def hide_buttons_and_connect_all(self):
         buttons = all_buttons(self)
