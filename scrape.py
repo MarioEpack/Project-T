@@ -195,7 +195,8 @@ def sqlite_update(session, server):
         aid    INTEGER NOT NULL,
         level  INTEGER NOT NULL,
         active INTEGER NOT NULL,
-        timer INTEGER NOT NULL
+        timer INTEGER NOT NULL,
+        cancel_link TEXT NOT NULL
         )
     ''')
 
@@ -261,10 +262,18 @@ def is_building(village_id, session, server):
         gid_info = re.findall(r"\d+", gid_info)[0]
         aid_info = re.findall(r"\"aid\":\"....", str(soup))[0]
         aid_info = re.findall(r"\d+", aid_info)[0]
+        #cancel_link
+        cancel_btn = re.findall(r".*<a\shref.*", str(soup))
+        cancel_btn = cancel_btn[17]
+        cancel_btn = cancel_btn.replace(" ", "")
+        cancel_btn = cancel_btn.replace("<ahref=\"", "")
+        cancel_btn = cancel_btn.replace("\">", "")
+        cancel_btn = cancel_btn.replace("amp;", "")
+        print cancel_btn
         #SQL execute
-        cur.execute('''INSERT INTO build_queue(village_id, gid, aid, level, active, timer)
-        VALUES(?, ?, ?, ?, ?, ?)''',
-        (village_id, gid_info, aid_info, level_info, "1", time_left))
+        cur.execute('''INSERT INTO build_queue(village_id, gid, aid, level, active, timer, cancel_link)
+        VALUES(?, ?, ?, ?, ?, ?, ?)''',
+        (village_id, gid_info, aid_info, level_info, "1", time_left, cancel_btn))
         conn.commit()
         return True
     except TypeError:    
